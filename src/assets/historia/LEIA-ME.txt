@@ -1,0 +1,18 @@
+Coloque aqui as fotos que ilustram cada capítulo de "Nossa História".
+
+O nome do arquivo deve ser o slug do capítulo (formatos: jpg, jpeg, png ou webp):
+
+  2015-colegio-militar.jpg
+  2017-primeiro-beijo.jpg
+  2018-pedido-namoro.jpg
+  2019-espanha-orlando.jpg
+  2020-volta-brasil.jpg
+  2021-ufmg.jpg
+  2022-alemanha.jpg
+  2023-reencontro.jpg
+  2026-sp-guaranesia.jpg
+  2026-pedido.jpg
+  2026-casamento.jpg
+
+Ao salvar o arquivo com o nome certo, a foto aparece automaticamente na timeline —
+sem mexer em código. Capítulos sem foto mostram um espaço reservado.

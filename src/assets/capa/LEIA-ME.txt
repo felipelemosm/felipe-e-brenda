@@ -1,0 +1,7 @@
+Coloque aqui fotos extras para o slideshow da capa (jpg, jpeg, png ou webp).
+
+A foto principal (src/assets/foto-capa.jpeg) é sempre a primeira; as fotos desta
+pasta entram em seguida, em ordem alfabética, trocando com fade a cada 6 segundos
+dentro da mesma moldura de arco. Nada precisa ser alterado no código.
+
+Dica: use fotos verticais (proporção próxima de 4:5) para preencher bem o arco.
