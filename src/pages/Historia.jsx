@@ -1,6 +1,8 @@
 // Para ilustrar um momento, salve a foto em src/assets/historia/
 // com o nome do slug do capítulo (ex.: 2015-colegio-militar.jpg).
 // Formatos aceitos: jpg, jpeg, png e webp.
+// Campos opcionais por capítulo: photoPosition ('top' etc., para ajustar o
+// enquadramento) e noPhoto (capítulo só com texto, sem espaço de foto).
 const photos = import.meta.glob('../assets/historia/*.{jpg,jpeg,png,webp}', {
   eager: true,
   import: 'default',
@@ -37,12 +39,14 @@ const CHAPTERS = [
     date: '2019',
     title: 'Um oceano entre nós',
     text: 'Felipe começou a faculdade e Brenda foi morar na Espanha. No fim do ano, foi a vez dele partir: Orlando, nos Estados Unidos. Começava a jornada do amor à distância.',
+    photoPosition: 'top',
   },
   {
     slug: '2020-volta-brasil',
     date: '2020',
     title: 'De volta ao Brasil',
     text: 'Felipe regressou ao Brasil — e o mundo parou com a pandemia. O nosso amor, não.',
+    photoPosition: 'top',
   },
   {
     slug: '2021-ufmg',
@@ -63,10 +67,10 @@ const CHAPTERS = [
     text: 'Felipe voltou de vez para o Brasil, e pudemos viver o nosso amor de perto de novo.',
   },
   {
-    slug: '2026-sp-guaranesia',
-    date: '2026',
-    title: 'São Paulo & Guaranésia',
-    text: 'Felipe se mudou para São Paulo e Brenda passou vários meses em Guaranésia-MG. Já éramos especialistas em saudade — e em superá-la.',
+    slug: '2024-formatura-ojdp',
+    date: '2024 — 2025',
+    title: 'Formatura e fé',
+    text: 'Felipe se formou Engenheiro da Computação, e juntos mergulhamos na Obra Jovem da Divina Providência (OJDP) — a fé caminhando conosco.',
   },
   {
     slug: '2026-pedido',
@@ -75,10 +79,17 @@ const CHAPTERS = [
     text: 'Veio o “sim” mais esperado: ficamos noivos e começamos a sonhar, juntos, com o grande dia.',
   },
   {
+    slug: '2026-sp-guaranesia',
+    date: '2026',
+    title: 'São Paulo & Guaranésia',
+    text: 'Felipe se mudou para São Paulo e Brenda passou vários meses em Guaranésia-MG. Já éramos especialistas em saudade — e em superá-la.',
+  },
+  {
     slug: '2026-casamento',
     date: '10 · Outubro · 2026',
     title: 'O grande dia',
     text: 'Às 10h30 da manhã, na Capela Nossa Senhora da Conceição - Colégio Arnaldo, diante de Deus, da família e dos amigos, diremos “sim” para a vida inteira.',
+    noPhoto: true,
   },
 ]
 
@@ -96,9 +107,10 @@ export default function Historia() {
           const photo = photoFor(chapter.slug)
           return (
             <div className="t-item" key={chapter.slug}>
-              {photo ? (
+              {chapter.noPhoto ? null : photo ? (
                 <figure className="t-photo">
-                  <img src={photo} alt={`${chapter.title} — ${chapter.date}`} loading="lazy" />
+                  <img src={photo} alt={`${chapter.title} — ${chapter.date}`} loading="lazy"
+                    style={chapter.photoPosition ? { objectPosition: chapter.photoPosition } : undefined} />
                 </figure>
               ) : (
                 <div className="t-photo placeholder" aria-hidden="true">
