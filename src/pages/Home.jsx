@@ -10,7 +10,7 @@ export default function Home() {
       <h1 className="hero-names script">
         Felipe <span className="amp">&amp;</span> Brenda
       </h1>
-      <div className="hero-date">10 · 10 · 2026 — 10h</div>
+      <div className="hero-date">10 · 10 · 2026 — 10h30</div>
       <div className="hero-place">Capela Nossa Senhora da Conceição - Colégio Arnaldo · Belo Horizonte, MG</div>
 
       <HeroPhotos />

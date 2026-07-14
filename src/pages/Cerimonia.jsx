@@ -33,7 +33,7 @@ export default function Cerimonia() {
         kind="Cerimônia Religiosa"
         name="Capela Nossa Senhora da Conceição - Colégio Arnaldo"
         detail="Praça João Pessoa — Bairro Funcionários, Belo Horizonte · MG"
-        time="Sábado, 10 · 10 · 2026 — 10h · Missa (1h a 1h30)"
+        time="Sábado, 10 · 10 · 2026 — 10h30 · Missa (1h a 1h30)"
         photo={CAPELA_PHOTO}
         photoAlt="Fachada do Colégio Arnaldo, em Belo Horizonte"
         mapQuery="Capela do Colégio Arnaldo, Belo Horizonte MG"

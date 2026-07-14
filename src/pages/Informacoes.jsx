@@ -82,7 +82,7 @@ const INFOS = [
     text: (
       <>
         <p>
-          A missa será às <strong>10h da manhã</strong> e o almoço será servido apenas
+          A missa será às <strong>10h30 da manhã</strong> e o almoço será servido apenas
           na recepção, no Espaço Naya, após a celebração.
         </p>
         <p>
@@ -106,7 +106,7 @@ const INFOS = [
         <p>
           As portas da capela abrem cedo: planeje chegar com cerca de{' '}
           <strong>15 minutos de antecedência</strong>. A missa começará pontualmente às
-          10h, e a entrada dos noivos não espera trânsito.
+          10h30, e a entrada dos noivos não espera trânsito.
         </p>
       </>
     ),

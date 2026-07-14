@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const WEDDING_DATE = new Date('2026-10-10T10:00:00-03:00')
+const WEDDING_DATE = new Date('2026-10-10T10:30:00-03:00')
 
 function remaining() {
   const diff = WEDDING_DATE - new Date()

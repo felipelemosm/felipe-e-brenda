@@ -163,7 +163,7 @@ export default function Indicacoes() {
             <p className="rec-text">
               Enquanto isso, uma dica: tanto a Savassi quanto o centro de Lagoa Santa
               têm bons salões; agende com antecedência para a manhã do dia 10, pois a
-              missa começa às 10h.
+              missa começa às 10h30.
             </p>
           </div>
         </div>
