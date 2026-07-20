@@ -65,6 +65,7 @@ const CHAPTERS = [
     date: '2023',
     title: 'O reencontro',
     text: 'Felipe voltou de vez para o Brasil, e pudemos viver o nosso amor de perto de novo.',
+    photoPosition: 'top',
   },
   {
     slug: '2024-formatura-ojdp',
@@ -88,7 +89,7 @@ const CHAPTERS = [
     slug: '2026-casamento',
     date: '10 · Outubro · 2026',
     title: 'O grande dia',
-    text: 'Às 10h30 da manhã, na Capela Nossa Senhora da Conceição - Colégio Arnaldo, diante de Deus, da família e dos amigos, diremos “sim” para a vida inteira.',
+    text: 'Às 10h30 da manhã, na Capela Nossa Senhora da Conceição - Colégio Arnaldo, diante de Deus e da família, diremos “sim” para a vida inteira.',
     noPhoto: true,
   },
 ]

@@ -1219,3 +1219,39 @@ main, .nav, .footer { position: relative; z-index: 1; }
   .messages-slideshow { padding: 1.3rem 1.1rem 1.2rem; }
   .footer-crest { height: 44px; }
 }
+
+/* ---------- Registro de presente no modal ---------- */
+.gift-confirm {
+  margin-top: 1.2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--gold-soft);
+}
+.gift-confirm .btn.ghost {
+  border: 1px solid var(--gold-deep);
+  cursor: pointer;
+  font-family: 'Forum', serif;
+  background: transparent;
+}
+.gift-confirm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  text-align: left;
+}
+.gift-confirm-form input, .gift-confirm-form textarea {
+  font-family: 'Forum', serif;
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--gold-soft);
+  padding: 0.6rem 0.8rem;
+  resize: vertical;
+}
+.gift-confirm-form input:focus, .gift-confirm-form textarea:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+.gift-confirm-thanks {
+  color: var(--gold-dark);
+  font-size: 1.05rem;
+}

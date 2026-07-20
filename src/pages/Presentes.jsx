@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PIX_KEY, CARD_PAYMENT_LINK } from '../config.js'
+import { BACKEND_ENDPOINT, PIX_KEY, CARD_PAYMENT_LINK } from '../config.js'
 
 // QR Code do PIX: salve a imagem como src/assets/pix-qr.png (ou .jpg)
 // e ela aparece automaticamente na janela de presente.
@@ -93,6 +93,30 @@ function formatPrice(value) {
 
 function PixModal({ gift, onClose }) {
   const [copied, setCopied] = useState(false)
+  const [registro, setRegistro] = useState('idle') // idle | form | sending | sent
+  const [form, setForm] = useState({ nome: '', dedicatoria: '' })
+
+  async function registrar(event) {
+    event.preventDefault()
+    setRegistro('sending')
+    try {
+      await fetch(BACKEND_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          tipo: 'presente',
+          presente: gift.name,
+          valor: String(gift.price),
+          nome: form.nome,
+          dedicatoria: form.dedicatoria,
+        }),
+      })
+      setRegistro('sent')
+    } catch {
+      setRegistro('form')
+    }
+  }
 
   async function copyKey() {
     try {
@@ -130,6 +154,33 @@ function PixModal({ gift, onClose }) {
           O valor é uma referência carinhosa — qualquer quantia nos ajuda a realizar
           este sonho. Obrigado! 🤍
         </p>
+
+        {BACKEND_ENDPOINT && (
+          <div className="gift-confirm">
+            {registro === 'idle' && (
+              <button className="btn ghost" onClick={() => setRegistro('form')}>
+                Já paguei — registrar meu presente
+              </button>
+            )}
+            {(registro === 'form' || registro === 'sending') && (
+              <form className="gift-confirm-form" onSubmit={registrar}>
+                <input type="text" placeholder="Seu nome (opcional)" value={form.nome}
+                  onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+                <textarea rows="2" placeholder="Dedicatória aos noivos (opcional)"
+                  value={form.dedicatoria} maxLength={300}
+                  onChange={(e) => setForm({ ...form, dedicatoria: e.target.value })} />
+                <button className="btn" type="submit" disabled={registro === 'sending'}>
+                  {registro === 'sending' ? 'Registrando…' : 'Registrar presente'}
+                </button>
+              </form>
+            )}
+            {registro === 'sent' && (
+              <p className="gift-confirm-thanks">
+                Presente registrado — muito obrigado! 🤍
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
