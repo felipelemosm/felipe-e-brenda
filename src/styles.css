@@ -1255,3 +1255,63 @@ main, .nav, .footer { position: relative; z-index: 1; }
   color: var(--gold-dark);
   font-size: 1.05rem;
 }
+/* ---------- Presentes: foto do item e ordenação ---------- */
+.gift-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #fff;
+  border: 1px solid var(--gold-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+.gift-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8%;
+  display: block;
+}
+.gift-photo.placeholder { color: var(--gold); }
+.gift-photo.placeholder svg { width: 42%; height: 42%; opacity: 0.75; }
+.gift-cat-tag {
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.gift-sort {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.4rem;
+}
+.gift-sort-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-right: 0.2rem;
+}
+.gift-sort button {
+  font-family: 'Forum', serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  background: transparent;
+  border: 1px solid var(--gold-soft);
+  padding: 0.42rem 0.95rem;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.gift-sort button:hover { border-color: var(--gold); }
+.gift-sort button.active {
+  background: var(--gold-deep);
+  color: var(--paper);
+  border-color: var(--gold-deep);
+}

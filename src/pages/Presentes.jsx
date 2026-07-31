@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { BACKEND_ENDPOINT, PIX_KEY, CARD_PAYMENT_LINK } from '../config.js'
 
 // QR Code do PIX: salve a imagem como src/assets/pix-qr.png (ou .jpg)
@@ -9,86 +9,136 @@ const qrImages = import.meta.glob('../assets/pix-qr.{png,jpg,jpeg}', {
 })
 const PIX_QR = Object.values(qrImages)[0] ?? null
 
+// Foto de cada presente (fundo branco): salve em src/assets/presentes/<slug>.jpg
+// (ou .png/.webp). Sem foto, o card mostra um selo dourado discreto.
+const giftPhotos = import.meta.glob('../assets/presentes/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+  import: 'default',
+})
+function photoFor(slug) {
+  const entry = Object.entries(giftPhotos).find(([path]) =>
+    path.split('/').pop().replace(/\.(jpg|jpeg|png|webp)$/i, '') === slug,
+  )
+  return entry ? entry[1] : null
+}
+
+// Preços são médias de referência (R$); qualquer quantia é bem-vinda.
 const CATEGORIES = [
   {
-    title: 'Nosso lar em São Paulo',
+    title: 'Cozinha',
     gifts: [
-      { emoji: '🍳', name: 'Jogo de panelas premium', price: 1800 },
-      { emoji: '🎂', name: 'Batedeira KitchenAid', price: 3200 },
-      { emoji: '☕', name: 'Cafeteira de espresso', price: 2400 },
-      { emoji: '🫘', name: 'Moedor de café', price: 600 },
-      { emoji: '🍟', name: 'Air fryer', price: 900 },
-      { emoji: '🤖', name: 'Robô aspirador', price: 2800 },
-      { emoji: '🥂', name: 'Jogo de taças de cristal', price: 850 },
-      { emoji: '🍴', name: 'Faqueiro inox 42 peças', price: 1200 },
-      { emoji: '🔪', name: 'Faca do chef japonesa', price: 950 },
-      { emoji: '🛏️', name: 'Jogo de cama de algodão egípcio', price: 1100 },
-      { emoji: '🛌', name: 'Edredom king size', price: 700 },
-      { emoji: '🛁', name: 'Kit de toalhas felpudas', price: 450 },
-      { emoji: '🍷', name: 'Adega climatizada', price: 1900 },
-      { emoji: '🥩', name: 'Kit churrasco premium', price: 550 },
-      { emoji: '🫕', name: 'Panela de fondue', price: 380 },
-      { emoji: '🧀', name: 'Tábua de frios artesanal', price: 320 },
-      { emoji: '🥤', name: 'Liquidificador de alta potência', price: 750 },
-      { emoji: '🍞', name: 'Forno elétrico de bancada', price: 1300 },
-      { emoji: '📺', name: 'Smart TV 65 polegadas', price: 4500 },
-      { emoji: '🔊', name: 'Soundbar para noites de cinema', price: 1600 },
-      { emoji: '🏠', name: 'Kit casa inteligente', price: 800 },
-      { emoji: '💧', name: 'Purificador de água', price: 1000 },
-      { emoji: '👔', name: 'Vaporizador de roupas', price: 650 },
-      { emoji: '🌀', name: 'Máquina lava e seca', price: 6500 },
-      { emoji: '🪴', name: 'Plantas para a varanda', price: 400 },
+      { slug: 'panelas-tramontina', name: 'Jogo de panelas inox Tramontina', price: 700 },
+      { slug: 'airfryer', name: 'Airfryer', price: 500 },
+      { slug: 'talheres-tramontina', name: 'Jogo de talheres inox Tramontina', price: 120 },
+      { slug: 'faqueiro', name: 'Faqueiro', price: 300 },
+      { slug: 'tacas', name: 'Jogo de taças', price: 150 },
+      { slug: 'jogo-pratos', name: 'Jogo de pratos', price: 250 },
+      { slug: 'liquidificador', name: 'Liquidificador', price: 250 },
+      { slug: 'batedeira', name: 'Batedeira', price: 300 },
+      { slug: 'filtro-agua', name: 'Filtro de água', price: 200 },
+      { slug: 'chaleira', name: 'Chaleira elétrica', price: 160 },
+      { slug: 'moedor-cafe', name: 'Moedor de café', price: 130 },
+      { slug: 'jogo-cha', name: 'Jogo de chá', price: 220 },
+      { slug: 'boleira', name: 'Boleira', price: 120 },
+      { slug: 'tabua-frios', name: 'Tábua de frios', price: 90 },
+      { slug: 'fondue', name: 'Panela de fondue', price: 180 },
+      { slug: 'porta-temperos', name: 'Porta-temperos', price: 110 },
+      { slug: 'fruteira', name: 'Fruteira', price: 90 },
     ],
   },
   {
-    title: 'Experiências a dois em São Paulo',
+    title: 'Sala',
     gifts: [
-      { emoji: '🌆', name: 'Jantar romântico em rooftop paulistano', price: 900 },
-      { emoji: '🎭', name: 'Noite no Theatro Municipal com jantar', price: 700 },
-      { emoji: '🍇', name: 'Assinatura de vinhos por 6 meses', price: 1200 },
-      { emoji: '🥐', name: 'Café da manhã na cama para os noivos', price: 250 },
-      { emoji: '🧺', name: 'Piquenique no Ibirapuera', price: 300 },
+      { slug: 'sofa', name: 'Sofá', price: 2500 },
+      { slug: 'televisao', name: 'Televisão', price: 2800 },
+      { slug: 'aspirador-robo', name: 'Aspirador robô', price: 1200 },
+      { slug: 'cortina', name: 'Cortina', price: 250 },
+      { slug: 'ventilador', name: 'Ventilador', price: 200 },
+      { slug: 'almofadas', name: 'Kit de almofadas', price: 200 },
+      { slug: 'mantas', name: 'Mantas para sofá', price: 150 },
+      { slug: 'porta-retratos', name: 'Porta-retratos', price: 80 },
     ],
   },
   {
-    title: 'Lua de Mel — rumo à Itália',
+    title: 'Quarto',
     gifts: [
-      { emoji: '✈️', name: 'Cota das passagens para a Itália', price: 2000 },
-      { emoji: '💺', name: 'Upgrade de assento no voo', price: 1200 },
-      { emoji: '🏛️', name: 'Diária em Roma com vista para a cidade eterna', price: 1500 },
-      { emoji: '🏔️', name: 'Diária em refúgio nas Dolomitas', price: 1800 },
-      { emoji: '🛡️', name: 'Seguro viagem dos noivos', price: 600 },
-      { emoji: '🚉', name: 'Trem panorâmico pela Itália', price: 500 },
+      { slug: 'jogo-cama', name: 'Jogo de cama', price: 300 },
+      { slug: 'edredom', name: 'Edredom', price: 300 },
+      { slug: 'espelho', name: 'Espelho', price: 250 },
+      { slug: 'travesseiros', name: 'Travesseiros', price: 150 },
+      { slug: 'abajur', name: 'Abajur', price: 150 },
     ],
   },
   {
-    title: 'Roma, a cidade eterna',
+    title: 'Banheiro',
     gifts: [
-      { emoji: '🕯️', name: 'Jantar à luz de velas no Trastevere', price: 800 },
-      { emoji: '🎨', name: 'Tour guiado no Vaticano e Capela Sistina', price: 700 },
-      { emoji: '🍨', name: 'Gelato todos os dias em Roma', price: 200 },
-      { emoji: '☕', name: 'Espresso no bar mais antigo de Roma', price: 100 },
-      { emoji: '🍝', name: 'Carbonara autêntica em trattoria romana', price: 350 },
-      { emoji: '👨‍🍳', name: 'Aula de culinária italiana para o casal', price: 950 },
-      { emoji: '🛵', name: 'Passeio de Vespa por Roma', price: 850 },
-      { emoji: '⛲', name: 'Moedas na Fontana di Trevi (e um desejo)', price: 80 },
+      { slug: 'roupao-casal', name: 'Roupão de banho para casal', price: 250 },
+      { slug: 'toalhas', name: 'Kit de toalhas', price: 180 },
+      { slug: 'tapetes', name: 'Kit de tapetes', price: 90 },
+      { slug: 'organizadores-gaveta', name: 'Organizadores de gaveta', price: 70 },
     ],
   },
   {
-    title: 'Dolomitas, o teto da lua de mel',
+    title: 'Lavanderia',
     gifts: [
-      { emoji: '🚠', name: 'Teleférico ao topo do Seceda', price: 450 },
-      { emoji: '🥾', name: 'Trilha guiada nas Tre Cime di Lavaredo', price: 650 },
-      { emoji: '🫕', name: 'Fondue com vista para as montanhas', price: 500 },
-      { emoji: '🚗', name: 'Carro pelas estradas alpinas', price: 1600 },
-      { emoji: '💆', name: 'Spa alpino para o casal', price: 1100 },
-      { emoji: '📸', name: 'Ensaio fotográfico na lua de mel', price: 1500 },
+      { slug: 'aspirador-po', name: 'Aspirador de pó', price: 400 },
+      { slug: 'robo-aspirador', name: 'Robô aspirador', price: 1200 },
+      { slug: 'ferro-passar', name: 'Ferro de passar', price: 150 },
+      { slug: 'tabua-passar', name: 'Tábua de passar', price: 120 },
+      { slug: 'varal', name: 'Varal', price: 120 },
     ],
   },
 ]
 
+const ALL_GIFTS = CATEGORIES.flatMap((category) =>
+  category.gifts.map((gift) => ({ ...gift, category: category.title })),
+)
+
 function formatPrice(value) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
+}
+
+function GiftPhoto({ slug, name }) {
+  const photo = photoFor(slug)
+  if (photo) {
+    return (
+      <div className="gift-photo">
+        <img src={photo} alt={name} loading="lazy" />
+      </div>
+    )
+  }
+  return (
+    <div className="gift-photo placeholder" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round">
+        <rect x="9" y="20" width="30" height="19" rx="1.5" />
+        <rect x="7" y="14" width="34" height="6" rx="1.5" />
+        <path d="M24 14 V39" />
+        <path d="M24 14 c-3-6 -11-5 -8 0 M24 14 c3-6 11-5 8 0" />
+      </svg>
+    </div>
+  )
+}
+
+function GiftCard({ gift, showCategory, onPix }) {
+  return (
+    <article className="gift-card">
+      <GiftPhoto slug={gift.slug} name={gift.name} />
+      {showCategory && <div className="gift-cat-tag">{gift.category}</div>}
+      <div className="gift-name">{gift.name}</div>
+      <div className="gift-price">{formatPrice(gift.price)}</div>
+      <div className="gift-actions">
+        <button className="btn gift-btn" onClick={() => onPix(gift)}>
+          Presentear
+        </button>
+        {CARD_PAYMENT_LINK && (
+          <a className="btn ghost gift-btn" target="_blank" rel="noopener noreferrer"
+            href={CARD_PAYMENT_LINK}>
+            Cartão
+          </a>
+        )}
+      </div>
+    </article>
+  )
 }
 
 function PixModal({ gift, onClose }) {
@@ -133,7 +183,6 @@ function PixModal({ gift, onClose }) {
       aria-label={`Presentear ${gift.name} via PIX`}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} aria-label="Fechar">×</button>
-        <div className="modal-emoji" aria-hidden="true">{gift.emoji}</div>
         <h3 className="modal-title">{gift.name}</h3>
         <div className="modal-price">{formatPrice(gift.price)}</div>
 
@@ -151,8 +200,8 @@ function PixModal({ gift, onClose }) {
           {copied ? 'Chave copiada! ✓' : 'Copiar chave PIX'}
         </button>
         <p className="modal-note">
-          O valor é uma referência carinhosa — qualquer quantia nos ajuda a realizar
-          este sonho. Obrigado! 🤍
+          O valor é uma referência carinhosa — qualquer quantia nos ajuda a montar o
+          nosso lar. Obrigado! 🤍
         </p>
 
         {BACKEND_ENDPOINT && (
@@ -188,6 +237,14 @@ function PixModal({ gift, onClose }) {
 
 export default function Presentes() {
   const [selected, setSelected] = useState(null)
+  const [sort, setSort] = useState('sugerido') // sugerido | preco-asc | preco-desc
+
+  const sortedFlat = useMemo(() => {
+    const list = [...ALL_GIFTS]
+    if (sort === 'preco-asc') list.sort((a, b) => a.price - b.price)
+    if (sort === 'preco-desc') list.sort((a, b) => b.price - a.price)
+    return list
+  }, [sort])
 
   return (
     <section className="section">
@@ -195,43 +252,44 @@ export default function Presentes() {
       <h2 className="section-title script">Lista de Presentes</h2>
       <div className="section-intro">
         <p className="section-sub">
-          Sua presença é o nosso maior presente. Mas, se quiser nos mimar, escolhemos
-          lembranças que vão morar com a gente em São Paulo — e momentos que viveremos
-          na lua de mel, entre Roma e as Dolomitas.
+          Sua presença é o nosso maior presente. Mas, se quiser nos ajudar a montar o
+          nosso primeiro lar, reunimos aqui algumas lembranças, dos itens do dia a dia
+          aos que vão deixar a casa com a nossa cara.
         </p>
-        <p className="section-sub">Cada item pode ser dado por PIX ou cartão.</p>
+        <p className="section-sub">
+          Cada item pode ser presenteado por PIX. O valor é só uma referência — qualquer
+          quantia é bem-vinda.
+        </p>
       </div>
 
-      {CATEGORIES.map((category) => (
-        <div className="gift-category" key={category.title}>
-          <h3 className="gift-category-title">{category.title}</h3>
-          <div className="gift-grid">
-            {category.gifts.map((gift) => (
-              <article className="gift-card" key={gift.name}>
-                <div className="gift-emoji" aria-hidden="true">{gift.emoji}</div>
-                <div className="gift-name">{gift.name}</div>
-                <div className="gift-price">{formatPrice(gift.price)}</div>
-                <div className="gift-actions">
-                  <button className="btn gift-btn" onClick={() => setSelected(gift)}>
-                    PIX
-                  </button>
-                  {CARD_PAYMENT_LINK ? (
-                    <a className="btn ghost gift-btn" target="_blank" rel="noopener noreferrer"
-                      href={CARD_PAYMENT_LINK}>
-                      Cartão
-                    </a>
-                  ) : (
-                    <button className="btn ghost gift-btn" disabled
-                      title="Pagamento por cartão em breve">
-                      Cartão
-                    </button>
-                  )}
-                </div>
-              </article>
-            ))}
+      <div className="gift-sort" role="group" aria-label="Ordenar presentes">
+        <span className="gift-sort-label">Ordenar por</span>
+        <button className={sort === 'sugerido' ? 'active' : undefined}
+          onClick={() => setSort('sugerido')}>Sugerido</button>
+        <button className={sort === 'preco-asc' ? 'active' : undefined}
+          onClick={() => setSort('preco-asc')}>Menor preço</button>
+        <button className={sort === 'preco-desc' ? 'active' : undefined}
+          onClick={() => setSort('preco-desc')}>Maior preço</button>
+      </div>
+
+      {sort === 'sugerido' ? (
+        CATEGORIES.map((category) => (
+          <div className="gift-category" key={category.title}>
+            <h3 className="gift-category-title">{category.title}</h3>
+            <div className="gift-grid">
+              {category.gifts.map((gift) => (
+                <GiftCard key={gift.slug} gift={gift} onPix={setSelected} />
+              ))}
+            </div>
           </div>
+        ))
+      ) : (
+        <div className="gift-grid">
+          {sortedFlat.map((gift) => (
+            <GiftCard key={gift.slug} gift={gift} showCategory onPix={setSelected} />
+          ))}
         </div>
-      ))}
+      )}
 
       {selected && <PixModal gift={selected} onClose={() => setSelected(null)} />}
     </section>

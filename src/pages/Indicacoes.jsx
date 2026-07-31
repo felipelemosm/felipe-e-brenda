@@ -149,26 +149,6 @@ export default function Indicacoes() {
         items={HOTEIS_BH}
       />
 
-      <div className="rec-group">
-        <div className="rec-group-eyebrow">Para se arrumar</div>
-        <h3 className="rec-group-title">Beleza no grande dia</h3>
-        <div className="beauty-card">
-          <div className="beauty-icon" aria-hidden="true">💄</div>
-          <div>
-            <h4 className="rec-name">Maquiadora indicada pelos noivos</h4>
-            <p className="rec-text">
-              Em breve divulgaremos aqui o contato da maquiadora que acompanhará a
-              noiva — ela também atende convidadas, mediante agendamento antecipado.
-            </p>
-            <p className="rec-text">
-              Enquanto isso, uma dica: tanto a Savassi quanto o centro de Lagoa Santa
-              têm bons salões; agende com antecedência para a manhã do dia 10, pois a
-              missa começa às 10h30.
-            </p>
-          </div>
-        </div>
-      </div>
-
       <RecGroup
         eyebrow="Para conhecer BH"
         title="Passeios para quem vem de longe"
