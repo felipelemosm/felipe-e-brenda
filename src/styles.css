@@ -1315,3 +1315,40 @@ main, .nav, .footer { position: relative; z-index: 1; }
   color: var(--paper);
   border-color: var(--gold-deep);
 }
+/* ---------- Informações: vídeo e links ---------- */
+.info-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: 1.2rem;
+  border: 1px solid var(--gold-soft);
+  background: var(--gold-wash);
+}
+.info-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.info-links {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  align-items: flex-start;
+}
+.info-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.98rem;
+  color: var(--gold-deep);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-soft);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+}
+.info-link:hover { color: var(--gold-dark); border-color: var(--gold); }
+.info-link::before { content: '↗'; font-size: 0.82rem; color: var(--gold); }
+.info-link.pdf::before { content: '📄'; }

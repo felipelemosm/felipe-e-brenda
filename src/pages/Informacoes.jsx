@@ -1,16 +1,12 @@
-// Fotos ilustrativas: salve em src/assets/informacoes/ com o nome do bloco
-// (missa.jpg, traje.jpg, comunhao.jpg, alimentacao.jpg, pontualidade.jpg).
-const photos = import.meta.glob('../assets/informacoes/*.{jpg,jpeg,png,webp}', {
-  eager: true,
-  import: 'default',
-})
+// Vídeos e links de formação católica por seção. Para trocar um vídeo, basta
+// substituir o ID do YouTube abaixo.
+const VIDEO_MISSA = 'ELgn6jdGA_I' // Casamento católico: tudo sobre a cerimônia
+const VIDEO_EUCARISTIA = 'YzuEyaMH3vQ' // Sacramento da Eucaristia
 
-function photoFor(slug) {
-  const entry = Object.entries(photos).find(([path]) =>
-    path.split('/').pop().replace(/\.(jpg|jpeg|png|webp)$/i, '') === slug,
-  )
-  return entry ? entry[1] : null
-}
+const LINK_MISSA_PASSO = 'https://formacao.cancaonova.com/igreja/catequese/voce-sabe-quais-sao-as-partes-da-missa-e-seus-elementos/'
+const LINK_PDF = './celebracao-do-matrimonio-na-missa.pdf'
+const LINK_EUCARISTIA = 'https://formacao.cancaonova.com/igreja/doutrina/o-sacramento-da-eucaristia/'
+const LINK_CATOLICO = 'https://www.a12.com/redacaoa12/espiritualidade/como-me-tornar-catolico'
 
 const INFOS = [
   {
@@ -18,7 +14,6 @@ const INFOS = [
     icon: '✝️',
     eyebrow: 'A celebração',
     title: 'Será uma missa de casamento',
-    photoAlt: 'Interior de uma igreja católica durante a celebração',
     text: (
       <>
         <p>
@@ -26,18 +21,23 @@ const INFOS = [
           dentro de uma igreja católica, com duração esperada de <strong>1h a 1h30</strong>.
         </p>
         <p>
-          Contamos com a presença de todos do início ao fim desse momento tão especial
-          para nós.
+          Se você não é católico ou não conhece o rito, não se preocupe: deixamos aqui um
+          vídeo mostrando como a missa de casamento acontece, um guia das partes da missa
+          e o roteiro da nossa celebração.
         </p>
       </>
     ),
+    video: { id: VIDEO_MISSA, title: 'Como funciona a missa de casamento católico' },
+    links: [
+      { label: 'A missa católica, passo a passo', href: LINK_MISSA_PASSO },
+      { label: 'Roteiro: a Celebração do Matrimônio na Missa (PDF)', href: LINK_PDF, pdf: true },
+    ],
   },
   {
     slug: 'traje',
     icon: '⛪',
     eyebrow: 'Traje',
     title: 'Vista-se para a casa de Deus',
-    photoAlt: 'Convidados vestidos elegantemente para um casamento',
     text: (
       <>
         <p>
@@ -56,7 +56,6 @@ const INFOS = [
     icon: '🕊️',
     eyebrow: 'Comunhão',
     title: 'Sobre a Sagrada Eucaristia',
-    photoAlt: 'Hóstias e cálice preparados para a comunhão',
     text: (
       <>
         <p>
@@ -70,15 +69,24 @@ const INFOS = [
           tranquilamente no banco ou aproximar-se de braços cruzados sobre o peito para
           receber uma bênção.
         </p>
+        <p>
+          Para nós, católicos, a Eucaristia é o próprio Cristo — Corpo e Sangue,
+          realmente presente. Se tiver curiosidade sobre o que a Igreja crê, deixamos um
+          vídeo e alguns links abaixo, com todo o carinho.
+        </p>
       </>
     ),
+    video: { id: VIDEO_EUCARISTIA, title: 'O que é a Sagrada Eucaristia' },
+    links: [
+      { label: 'O que a Igreja crê sobre a Eucaristia', href: LINK_EUCARISTIA },
+      { label: 'Como se tornar católico', href: LINK_CATOLICO },
+    ],
   },
   {
     slug: 'alimentacao',
     icon: '🍽️',
     eyebrow: 'Alimentação',
     title: 'Tome um bom café da manhã',
-    photoAlt: 'Mesa de café da manhã',
     text: (
       <>
         <p>
@@ -100,13 +108,12 @@ const INFOS = [
     icon: '🕰️',
     eyebrow: 'Pontualidade',
     title: 'Chegue com antecedência',
-    photoAlt: 'Relógio clássico marcando as horas',
     text: (
       <>
         <p>
           As portas da capela abrem cedo: planeje chegar com cerca de{' '}
-          <strong>15 minutos de antecedência</strong>. A missa começará pontualmente às
-          10h30, e a entrada dos noivos não espera trânsito.
+          <strong>15 minutos de antecedência</strong>. A missa começará por volta das
+          10h30, e a entrada dos noivos acontece logo em seguida.
         </p>
       </>
     ),
@@ -126,27 +133,42 @@ export default function Informacoes() {
       </div>
 
       <div className="infos">
-        {INFOS.map((info, index) => {
-          const photo = photoFor(info.slug)
-          return (
-            <article className="info-block" key={info.slug}>
-              <div className="info-marker">
-                <span className="info-icon" aria-hidden="true">{info.icon}</span>
-              </div>
-              <div className="info-content">
-                <div className="info-eyebrow">{info.eyebrow}</div>
-                <h3 className="info-title">{info.title}</h3>
-                <div className="info-text">{info.text}</div>
-                {photo && (
-                  <img className="info-photo" src={photo} alt={info.photoAlt} loading="lazy" />
-                )}
-              </div>
-              {index < INFOS.length - 1 && (
-                <div className="info-divider" aria-hidden="true">❦</div>
+        {INFOS.map((info, index) => (
+          <article className="info-block" key={info.slug}>
+            <div className="info-marker">
+              <span className="info-icon" aria-hidden="true">{info.icon}</span>
+            </div>
+            <div className="info-content">
+              <div className="info-eyebrow">{info.eyebrow}</div>
+              <h3 className="info-title">{info.title}</h3>
+              <div className="info-text">{info.text}</div>
+              {info.video && (
+                <div className="info-video">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${info.video.id}`}
+                    title={info.video.title}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
               )}
-            </article>
-          )
-        })}
+              {info.links && (
+                <div className="info-links">
+                  {info.links.map((link) => (
+                    <a key={link.href} className={`info-link${link.pdf ? ' pdf' : ''}`}
+                      href={link.href} target="_blank" rel="noopener noreferrer">
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+            {index < INFOS.length - 1 && (
+              <div className="info-divider" aria-hidden="true">❦</div>
+            )}
+          </article>
+        ))}
       </div>
     </section>
   )
