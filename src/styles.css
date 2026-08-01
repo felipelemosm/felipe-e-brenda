@@ -1352,3 +1352,65 @@ main, .nav, .footer { position: relative; z-index: 1; }
 .info-link:hover { color: var(--gold-dark); border-color: var(--gold); }
 .info-link::before { content: '↗'; font-size: 0.82rem; color: var(--gold); }
 .info-link.pdf::before { content: '📄'; }
+/* ---------- Presentes: controles, item comprado e ajuda ---------- */
+.gift-card { position: relative; }
+.gift-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 2.4rem;
+}
+.gift-controls .gift-sort { margin-bottom: 0; }
+.gift-card.bought { opacity: 0.7; }
+.gift-card.bought .gift-photo img { filter: grayscale(0.4); }
+.gift-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2;
+  background: var(--gold-deep);
+  color: var(--paper);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+}
+.gift-bought-label {
+  font-size: 0.82rem;
+  color: var(--gold-deep);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+.gift-confirm-hint {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-top: 0.2rem;
+}
+.gift-help {
+  max-width: 640px;
+  margin: 3.6rem auto 0;
+  background: var(--gold-wash);
+  border: 1px solid var(--gold-soft);
+  border-left: 3px solid var(--gold);
+  padding: 1.6rem 1.5rem;
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+  text-align: left;
+}
+.gift-help-icon { font-size: 1.8rem; line-height: 1; }
+.gift-help-title {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--gold-dark);
+  margin-bottom: 0.3rem;
+}
+.gift-help-text { color: var(--ink-soft); font-size: 1rem; margin-bottom: 0.95rem; }
+.gift-help-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.gift-help .btn { border: none; cursor: pointer; }
+.gift-help .btn.ghost { border: 1px solid var(--gold-deep); }
+@media (max-width: 640px) {
+  .gift-help { flex-direction: column; align-items: center; text-align: center; }
+}

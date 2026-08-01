@@ -1,16 +1,17 @@
-import { useMemo, useState } from 'react'
-import { BACKEND_ENDPOINT, PIX_KEY, CARD_PAYMENT_LINK } from '../config.js'
+import { useEffect, useMemo, useState } from 'react'
+import { GIFT_ENDPOINT, PIX_KEY, CARD_PAYMENT_LINK } from '../config.js'
 
-// QR Code do PIX: salve a imagem como src/assets/pix-qr.png (ou .jpg)
-// e ela aparece automaticamente na janela de presente.
+const GROOM_PHONE_DISPLAY = '(31) 98323-3101'
+const GROOM_PHONE_WA = '5531983233101'
+
+// QR Code do PIX: salve a imagem como src/assets/pix-qr.png (ou .jpg).
 const qrImages = import.meta.glob('../assets/pix-qr.{png,jpg,jpeg}', {
   eager: true,
   import: 'default',
 })
 const PIX_QR = Object.values(qrImages)[0] ?? null
 
-// Foto de cada presente (fundo branco): salve em src/assets/presentes/<slug>.jpg
-// (ou .png/.webp). Sem foto, o card mostra um selo dourado discreto.
+// Foto de cada presente (fundo branco): src/assets/presentes/<slug>.jpg
 const giftPhotos = import.meta.glob('../assets/presentes/*.{jpg,jpeg,png,webp}', {
   eager: true,
   import: 'default',
@@ -22,77 +23,106 @@ function photoFor(slug) {
   return entry ? entry[1] : null
 }
 
-// Preços são médias de referência (R$); qualquer quantia é bem-vinda.
+// Preços são médias de referência (R$), concentrados na faixa de 80 a 250.
 const CATEGORIES = [
   {
     title: 'Cozinha',
     gifts: [
-      { slug: 'panelas-tramontina', name: 'Jogo de panelas inox Tramontina', price: 700 },
-      { slug: 'airfryer', name: 'Airfryer', price: 500 },
-      { slug: 'talheres-tramontina', name: 'Jogo de talheres inox Tramontina', price: 120 },
-      { slug: 'faqueiro', name: 'Faqueiro', price: 300 },
-      { slug: 'tacas', name: 'Jogo de taças', price: 150 },
+      { slug: 'panelas-tramontina', name: 'Jogo de panelas inox Tramontina', price: 600 },
+      { slug: 'jogo-facas', name: 'Jogo de facas', price: 200 },
+      { slug: 'faqueiro', name: 'Faqueiro', price: 250 },
+      { slug: 'talheres-tramontina', name: 'Jogo de talheres inox Tramontina', price: 140 },
       { slug: 'jogo-pratos', name: 'Jogo de pratos', price: 250 },
-      { slug: 'liquidificador', name: 'Liquidificador', price: 250 },
-      { slug: 'batedeira', name: 'Batedeira', price: 300 },
-      { slug: 'filtro-agua', name: 'Filtro de água', price: 200 },
-      { slug: 'chaleira', name: 'Chaleira elétrica', price: 160 },
-      { slug: 'moedor-cafe', name: 'Moedor de café', price: 130 },
+      { slug: 'tacas', name: 'Jogo de taças', price: 140 },
+      { slug: 'jogo-copos', name: 'Jogo de copos', price: 100 },
+      { slug: 'xicaras-cafe', name: 'Jogo de xícaras de café', price: 120 },
       { slug: 'jogo-cha', name: 'Jogo de chá', price: 220 },
-      { slug: 'boleira', name: 'Boleira', price: 120 },
-      { slug: 'tabua-frios', name: 'Tábua de frios', price: 90 },
+      { slug: 'airfryer', name: 'Airfryer', price: 450 },
+      { slug: 'liquidificador', name: 'Liquidificador', price: 200 },
+      { slug: 'batedeira', name: 'Batedeira', price: 300 },
+      { slug: 'sanduicheira', name: 'Sanduicheira / grill', price: 160 },
+      { slug: 'chaleira', name: 'Chaleira elétrica', price: 160 },
+      { slug: 'moedor-cafe', name: 'Moedor de café', price: 120 },
+      { slug: 'espremedor', name: 'Espremedor de frutas', price: 120 },
+      { slug: 'panela-pressao', name: 'Panela de pressão', price: 250 },
       { slug: 'fondue', name: 'Panela de fondue', price: 180 },
-      { slug: 'porta-temperos', name: 'Porta-temperos', price: 110 },
-      { slug: 'fruteira', name: 'Fruteira', price: 90 },
+      { slug: 'filtro-agua', name: 'Filtro de água', price: 200 },
+      { slug: 'potes-mantimentos', name: 'Kit de potes de mantimentos', price: 160 },
+      { slug: 'assadeiras', name: 'Kit de assadeiras', price: 140 },
+      { slug: 'boleira', name: 'Boleira', price: 120 },
+      { slug: 'tabua-frios', name: 'Tábua de frios', price: 100 },
+      { slug: 'porta-temperos', name: 'Porta-temperos', price: 100 },
+      { slug: 'escorredor-louca', name: 'Escorredor de louça', price: 120 },
+      { slug: 'jarra-vidro', name: 'Jarra de vidro', price: 80 },
+      { slug: 'fruteira', name: 'Fruteira', price: 100 },
     ],
   },
   {
     title: 'Sala',
     gifts: [
-      { slug: 'sofa', name: 'Sofá', price: 2500 },
-      { slug: 'televisao', name: 'Televisão', price: 2800 },
-      { slug: 'aspirador-robo', name: 'Aspirador robô', price: 1200 },
+      { slug: 'sofa', name: 'Sofá', price: 2800 },
+      { slug: 'televisao', name: 'Televisão', price: 2000 },
+      { slug: 'rack-tv', name: 'Rack para TV', price: 600 },
+      { slug: 'aspirador-robo', name: 'Aspirador robô', price: 1000 },
+      { slug: 'tapete-sala', name: 'Tapete de sala', price: 300 },
       { slug: 'cortina', name: 'Cortina', price: 250 },
+      { slug: 'luminaria-piso', name: 'Luminária de piso', price: 250 },
       { slug: 'ventilador', name: 'Ventilador', price: 200 },
-      { slug: 'almofadas', name: 'Kit de almofadas', price: 200 },
-      { slug: 'mantas', name: 'Mantas para sofá', price: 150 },
-      { slug: 'porta-retratos', name: 'Porta-retratos', price: 80 },
+      { slug: 'quadro-decorativo', name: 'Quadro decorativo', price: 160 },
+      { slug: 'almofadas', name: 'Kit de almofadas', price: 180 },
+      { slug: 'mantas', name: 'Mantas para sofá', price: 140 },
+      { slug: 'vaso-decorativo', name: 'Vaso decorativo', price: 120 },
+      { slug: 'porta-retratos', name: 'Porta-retratos', price: 100 },
     ],
   },
   {
     title: 'Quarto',
     gifts: [
-      { slug: 'jogo-cama', name: 'Jogo de cama', price: 300 },
-      { slug: 'edredom', name: 'Edredom', price: 300 },
-      { slug: 'espelho', name: 'Espelho', price: 250 },
-      { slug: 'travesseiros', name: 'Travesseiros', price: 150 },
-      { slug: 'abajur', name: 'Abajur', price: 150 },
+      { slug: 'jogo-cama', name: 'Jogo de cama', price: 250 },
+      { slug: 'edredom', name: 'Edredom', price: 250 },
+      { slug: 'criado-mudo', name: 'Criado-mudo', price: 250 },
+      { slug: 'espelho', name: 'Espelho', price: 220 },
+      { slug: 'cortina-quarto', name: 'Cortina blackout', price: 200 },
+      { slug: 'cabideiro', name: 'Cabideiro / arara', price: 180 },
+      { slug: 'abajur', name: 'Abajur', price: 160 },
+      { slug: 'protetor-colchao', name: 'Protetor de colchão', price: 140 },
+      { slug: 'travesseiros', name: 'Travesseiros', price: 140 },
+      { slug: 'lencois-avulsos', name: 'Lençol avulso', price: 120 },
     ],
   },
   {
     title: 'Banheiro',
     gifts: [
-      { slug: 'roupao-casal', name: 'Roupão de banho para casal', price: 250 },
+      { slug: 'roupao-casal', name: 'Roupão de banho para casal', price: 220 },
       { slug: 'toalhas', name: 'Kit de toalhas', price: 180 },
-      { slug: 'tapetes', name: 'Kit de tapetes', price: 90 },
-      { slug: 'organizadores-gaveta', name: 'Organizadores de gaveta', price: 70 },
+      { slug: 'cesto-roupa', name: 'Cesto de roupa suja', price: 140 },
+      { slug: 'kit-banheiro-acessorios', name: 'Kit de acessórios para banheiro', price: 120 },
+      { slug: 'tapetes', name: 'Kit de tapetes', price: 100 },
+      { slug: 'organizadores-gaveta', name: 'Organizadores de gaveta', price: 80 },
+      { slug: 'lixeira-banheiro', name: 'Lixeira para banheiro', price: 80 },
+      { slug: 'tapete-antiderrapante', name: 'Tapete antiderrapante para box', price: 80 },
     ],
   },
   {
     title: 'Lavanderia',
     gifts: [
-      { slug: 'aspirador-po', name: 'Aspirador de pó', price: 400 },
-      { slug: 'robo-aspirador', name: 'Robô aspirador', price: 1200 },
-      { slug: 'ferro-passar', name: 'Ferro de passar', price: 150 },
-      { slug: 'tabua-passar', name: 'Tábua de passar', price: 120 },
+      { slug: 'aspirador-po', name: 'Aspirador de pó', price: 350 },
+      { slug: 'ferro-passar', name: 'Ferro de passar', price: 160 },
+      { slug: 'balde-esfregao', name: 'Balde com esfregão (mop)', price: 160 },
+      { slug: 'tabua-passar', name: 'Tábua de passar', price: 140 },
       { slug: 'varal', name: 'Varal', price: 120 },
+      { slug: 'cesto-organizador', name: 'Cesto organizador', price: 100 },
+      { slug: 'rodo-vassoura', name: 'Kit rodo e vassoura', price: 100 },
+      { slug: 'pregadores', name: 'Kit de prendedores', price: 80 },
     ],
   },
 ]
 
+let indexCounter = 0
 const ALL_GIFTS = CATEGORIES.flatMap((category) =>
-  category.gifts.map((gift) => ({ ...gift, category: category.title })),
+  category.gifts.map((gift) => ({ ...gift, category: category.title, order: indexCounter++ })),
 )
+const GIFT_BY_SLUG = Object.fromEntries(ALL_GIFTS.map((g) => [g.slug, g]))
 
 function formatPrice(value) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
@@ -119,29 +149,36 @@ function GiftPhoto({ slug, name }) {
   )
 }
 
-function GiftCard({ gift, showCategory, onPix }) {
+function GiftCard({ gift, bought, showCategory, onPix }) {
   return (
-    <article className="gift-card">
+    <article className={`gift-card${bought ? ' bought' : ''}`}>
+      {bought && <div className="gift-badge">Já comprado</div>}
       <GiftPhoto slug={gift.slug} name={gift.name} />
       {showCategory && <div className="gift-cat-tag">{gift.category}</div>}
       <div className="gift-name">{gift.name}</div>
       <div className="gift-price">{formatPrice(gift.price)}</div>
       <div className="gift-actions">
-        <button className="btn gift-btn" onClick={() => onPix(gift)}>
-          Presentear
-        </button>
-        {CARD_PAYMENT_LINK && (
-          <a className="btn ghost gift-btn" target="_blank" rel="noopener noreferrer"
-            href={CARD_PAYMENT_LINK}>
-            Cartão
-          </a>
+        {bought ? (
+          <span className="gift-bought-label">Já comprado 🤍</span>
+        ) : (
+          <>
+            <button className="btn gift-btn" onClick={() => onPix(gift)}>
+              Presentear
+            </button>
+            {CARD_PAYMENT_LINK && (
+              <a className="btn ghost gift-btn" target="_blank" rel="noopener noreferrer"
+                href={CARD_PAYMENT_LINK}>
+                Cartão
+              </a>
+            )}
+          </>
         )}
       </div>
     </article>
   )
 }
 
-function PixModal({ gift, onClose }) {
+function PixModal({ gift, onClose, onRegistered }) {
   const [copied, setCopied] = useState(false)
   const [registro, setRegistro] = useState('idle') // idle | form | sending | sent
   const [form, setForm] = useState({ nome: '', dedicatoria: '' })
@@ -150,12 +187,13 @@ function PixModal({ gift, onClose }) {
     event.preventDefault()
     setRegistro('sending')
     try {
-      await fetch(BACKEND_ENDPOINT, {
+      await fetch(GIFT_ENDPOINT, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           tipo: 'presente',
+          slug: gift.slug,
           presente: gift.name,
           valor: String(gift.price),
           nome: form.nome,
@@ -163,6 +201,7 @@ function PixModal({ gift, onClose }) {
         }),
       })
       setRegistro('sent')
+      onRegistered(gift.slug)
     } catch {
       setRegistro('form')
     }
@@ -204,7 +243,7 @@ function PixModal({ gift, onClose }) {
           nosso lar. Obrigado! 🤍
         </p>
 
-        {BACKEND_ENDPOINT && (
+        {GIFT_ENDPOINT && (
           <div className="gift-confirm">
             {registro === 'idle' && (
               <button className="btn ghost" onClick={() => setRegistro('form')}>
@@ -221,6 +260,10 @@ function PixModal({ gift, onClose }) {
                 <button className="btn" type="submit" disabled={registro === 'sending'}>
                   {registro === 'sending' ? 'Registrando…' : 'Registrar presente'}
                 </button>
+                <p className="gift-confirm-hint">
+                  Ao registrar, o item passa a aparecer como “já comprado” para os demais
+                  convidados, nos dois sites.
+                </p>
               </form>
             )}
             {registro === 'sent' && (
@@ -238,13 +281,55 @@ function PixModal({ gift, onClose }) {
 export default function Presentes() {
   const [selected, setSelected] = useState(null)
   const [sort, setSort] = useState('sugerido') // sugerido | preco-asc | preco-desc
+  const [filter, setFilter] = useState('todos') // todos | disponiveis | comprados
+  const [purchased, setPurchased] = useState(() => new Set())
 
-  const sortedFlat = useMemo(() => {
-    const list = [...ALL_GIFTS]
-    if (sort === 'preco-asc') list.sort((a, b) => a.price - b.price)
-    if (sort === 'preco-desc') list.sort((a, b) => b.price - a.price)
-    return list
-  }, [sort])
+  useEffect(() => {
+    if (!GIFT_ENDPOINT) return
+    let cancelled = false
+    fetch(`${GIFT_ENDPOINT}?action=comprados`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && Array.isArray(data.comprados)) {
+          setPurchased(new Set(data.comprados))
+        }
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [])
+
+  function markBought(slug) {
+    setPurchased((prev) => {
+      const next = new Set(prev)
+      next.add(slug)
+      return next
+    })
+  }
+
+  const isBought = (slug) => purchased.has(slug)
+
+  function passesFilter(slug) {
+    if (filter === 'disponiveis') return !isBought(slug)
+    if (filter === 'comprados') return isBought(slug)
+    return true
+  }
+
+  // ordena: disponíveis primeiro, depois já comprados; dentro disso, pela chave escolhida
+  function ordenar(list) {
+    return [...list].sort((a, b) => {
+      const ba = isBought(a.slug) ? 1 : 0
+      const bb = isBought(b.slug) ? 1 : 0
+      if (ba !== bb) return ba - bb
+      if (sort === 'preco-asc') return a.price - b.price
+      if (sort === 'preco-desc') return b.price - a.price
+      return a.order - b.order
+    })
+  }
+
+  const flat = useMemo(() => ordenar(ALL_GIFTS.filter((g) => passesFilter(g.slug))),
+    [sort, filter, purchased])
+
+  const totalDisponiveis = ALL_GIFTS.filter((g) => !isBought(g.slug)).length
 
   return (
     <section className="section">
@@ -257,41 +342,89 @@ export default function Presentes() {
           aos que vão deixar a casa com a nossa cara.
         </p>
         <p className="section-sub">
-          Cada item pode ser presenteado por PIX. O valor é só uma referência — qualquer
-          quantia é bem-vinda.
+          A lista é a mesma nos dois sites: quando alguém escolhe um presente, ele aparece
+          como “já comprado” para todos. Cada item pode ser presenteado por PIX, e o valor
+          é só uma referência — qualquer quantia é bem-vinda.
         </p>
       </div>
 
-      <div className="gift-sort" role="group" aria-label="Ordenar presentes">
-        <span className="gift-sort-label">Ordenar por</span>
-        <button className={sort === 'sugerido' ? 'active' : undefined}
-          onClick={() => setSort('sugerido')}>Sugerido</button>
-        <button className={sort === 'preco-asc' ? 'active' : undefined}
-          onClick={() => setSort('preco-asc')}>Menor preço</button>
-        <button className={sort === 'preco-desc' ? 'active' : undefined}
-          onClick={() => setSort('preco-desc')}>Maior preço</button>
+      <div className="gift-controls">
+        <div className="gift-sort">
+          <span className="gift-sort-label">Mostrar</span>
+          <button className={filter === 'todos' ? 'active' : undefined}
+            onClick={() => setFilter('todos')}>Todos</button>
+          <button className={filter === 'disponiveis' ? 'active' : undefined}
+            onClick={() => setFilter('disponiveis')}>Ainda disponíveis</button>
+          <button className={filter === 'comprados' ? 'active' : undefined}
+            onClick={() => setFilter('comprados')}>Já comprados</button>
+        </div>
+        <div className="gift-sort">
+          <span className="gift-sort-label">Ordenar por</span>
+          <button className={sort === 'sugerido' ? 'active' : undefined}
+            onClick={() => setSort('sugerido')}>Sugerido</button>
+          <button className={sort === 'preco-asc' ? 'active' : undefined}
+            onClick={() => setSort('preco-asc')}>Menor preço</button>
+          <button className={sort === 'preco-desc' ? 'active' : undefined}
+            onClick={() => setSort('preco-desc')}>Maior preço</button>
+        </div>
       </div>
 
       {sort === 'sugerido' ? (
-        CATEGORIES.map((category) => (
-          <div className="gift-category" key={category.title}>
-            <h3 className="gift-category-title">{category.title}</h3>
-            <div className="gift-grid">
-              {category.gifts.map((gift) => (
-                <GiftCard key={gift.slug} gift={gift} onPix={setSelected} />
-              ))}
+        CATEGORIES.map((category) => {
+          const items = ordenar(
+            category.gifts.map((g) => GIFT_BY_SLUG[g.slug]).filter((g) => passesFilter(g.slug)),
+          )
+          if (items.length === 0) return null
+          return (
+            <div className="gift-category" key={category.title}>
+              <h3 className="gift-category-title">{category.title}</h3>
+              <div className="gift-grid">
+                {items.map((gift) => (
+                  <GiftCard key={gift.slug} gift={gift} bought={isBought(gift.slug)}
+                    onPix={setSelected} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))
+          )
+        })
       ) : (
         <div className="gift-grid">
-          {sortedFlat.map((gift) => (
-            <GiftCard key={gift.slug} gift={gift} showCategory onPix={setSelected} />
+          {flat.map((gift) => (
+            <GiftCard key={gift.slug} gift={gift} bought={isBought(gift.slug)}
+              showCategory onPix={setSelected} />
           ))}
         </div>
       )}
 
-      {selected && <PixModal gift={selected} onClose={() => setSelected(null)} />}
+      {flat.length === 0 && (
+        <p className="section-sub" style={{ marginTop: '2rem' }}>
+          {filter === 'comprados'
+            ? 'Nenhum presente foi escolhido ainda — seja o primeiro! 🤍'
+            : 'Todos os presentes já foram escolhidos. Obrigado de coração! 🤍'}
+        </p>
+      )}
+
+      <div className="gift-help">
+        <div className="gift-help-icon" aria-hidden="true">💬</div>
+        <div>
+          <h3 className="gift-help-title">Dúvidas sobre os presentes?</h3>
+          <p className="gift-help-text">
+            Quer confirmar um item, combinar outro valor ou tem qualquer dúvida? Fale
+            direto com o Felipe.
+          </p>
+          <div className="gift-help-actions">
+            <a className="btn" target="_blank" rel="noopener noreferrer"
+              href={`https://wa.me/${GROOM_PHONE_WA}`}>
+              WhatsApp {GROOM_PHONE_DISPLAY}
+            </a>
+            <a className="btn ghost" href={`tel:+${GROOM_PHONE_WA}`}>Ligar</a>
+          </div>
+        </div>
+      </div>
+
+      {selected && (
+        <PixModal gift={selected} onClose={() => setSelected(null)} onRegistered={markBought} />
+      )}
     </section>
   )
 }
