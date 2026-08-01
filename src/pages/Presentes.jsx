@@ -55,6 +55,15 @@ const CATEGORIES = [
       { slug: 'escorredor-louca', name: 'Escorredor de louça', price: 120 },
       { slug: 'jarra-vidro', name: 'Jarra de vidro', price: 80 },
       { slug: 'fruteira', name: 'Fruteira', price: 100 },
+      { slug: 'canecas', name: 'Jogo de canecas', price: 80 },
+      { slug: 'utensilios-cozinha', name: 'Kit de utensílios de cozinha', price: 90 },
+      { slug: 'toalha-mesa', name: 'Toalha de mesa', price: 90 },
+      { slug: 'cesto-paes', name: 'Cesto de pães', price: 75 },
+      { slug: 'jogo-americano', name: 'Jogo americano', price: 65 },
+      { slug: 'formas-silicone', name: 'Kit de formas de silicone', price: 65 },
+      { slug: 'panos-prato', name: 'Kit de panos de prato', price: 55 },
+      { slug: 'saleiro-pimenteiro', name: 'Saleiro e pimenteiro', price: 55 },
+      { slug: 'descanso-panela', name: 'Descanso de panela', price: 55 },
     ],
   },
   {
@@ -73,6 +82,8 @@ const CATEGORIES = [
       { slug: 'mantas', name: 'Mantas para sofá', price: 140 },
       { slug: 'vaso-decorativo', name: 'Vaso decorativo', price: 120 },
       { slug: 'porta-retratos', name: 'Porta-retratos', price: 100 },
+      { slug: 'difusor-aromas', name: 'Difusor de aromas', price: 90 },
+      { slug: 'porta-copos', name: 'Kit de porta-copos', price: 55 },
     ],
   },
   {
@@ -88,6 +99,8 @@ const CATEGORIES = [
       { slug: 'protetor-colchao', name: 'Protetor de colchão', price: 140 },
       { slug: 'travesseiros', name: 'Travesseiros', price: 140 },
       { slug: 'lencois-avulsos', name: 'Lençol avulso', price: 120 },
+      { slug: 'organizador-sapatos', name: 'Organizador de sapatos', price: 90 },
+      { slug: 'cabides', name: 'Kit de cabides', price: 65 },
     ],
   },
   {
@@ -101,6 +114,8 @@ const CATEGORIES = [
       { slug: 'organizadores-gaveta', name: 'Organizadores de gaveta', price: 80 },
       { slug: 'lixeira-banheiro', name: 'Lixeira para banheiro', price: 80 },
       { slug: 'tapete-antiderrapante', name: 'Tapete antiderrapante para box', price: 80 },
+      { slug: 'saboneteira', name: 'Kit saboneteira e dispenser', price: 65 },
+      { slug: 'porta-escovas', name: 'Porta-escovas de dente', price: 55 },
     ],
   },
   {
@@ -114,6 +129,7 @@ const CATEGORIES = [
       { slug: 'cesto-organizador', name: 'Cesto organizador', price: 100 },
       { slug: 'rodo-vassoura', name: 'Kit rodo e vassoura', price: 100 },
       { slug: 'pregadores', name: 'Kit de prendedores', price: 80 },
+      { slug: 'panos-limpeza', name: 'Kit de panos de limpeza', price: 55 },
     ],
   },
 ]
