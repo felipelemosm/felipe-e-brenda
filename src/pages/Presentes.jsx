@@ -165,12 +165,11 @@ function GiftPhoto({ slug, name }) {
   )
 }
 
-function GiftCard({ gift, bought, showCategory, onPix }) {
+function GiftCard({ gift, bought, onPix }) {
   return (
     <article className={`gift-card${bought ? ' bought' : ''}`}>
       {bought && <div className="gift-badge">Já comprado</div>}
       <GiftPhoto slug={gift.slug} name={gift.name} />
-      {showCategory && <div className="gift-cat-tag">{gift.category}</div>}
       <div className="gift-name">{gift.name}</div>
       <div className="gift-price">{formatPrice(gift.price)}</div>
       <div className="gift-actions">
@@ -342,10 +341,10 @@ export default function Presentes() {
     })
   }
 
-  const flat = useMemo(() => ordenar(ALL_GIFTS.filter((g) => passesFilter(g.slug))),
-    [sort, filter, purchased])
-
-  const totalDisponiveis = ALL_GIFTS.filter((g) => !isBought(g.slug)).length
+  const visibleCount = useMemo(
+    () => ALL_GIFTS.filter((g) => passesFilter(g.slug)).length,
+    [filter, purchased],
+  )
 
   return (
     <section className="section">
@@ -385,34 +384,25 @@ export default function Presentes() {
         </div>
       </div>
 
-      {sort === 'sugerido' ? (
-        CATEGORIES.map((category) => {
-          const items = ordenar(
-            category.gifts.map((g) => GIFT_BY_SLUG[g.slug]).filter((g) => passesFilter(g.slug)),
-          )
-          if (items.length === 0) return null
-          return (
-            <div className="gift-category" key={category.title}>
-              <h3 className="gift-category-title">{category.title}</h3>
-              <div className="gift-grid">
-                {items.map((gift) => (
-                  <GiftCard key={gift.slug} gift={gift} bought={isBought(gift.slug)}
-                    onPix={setSelected} />
-                ))}
-              </div>
+      {CATEGORIES.map((category) => {
+        const items = ordenar(
+          category.gifts.map((g) => GIFT_BY_SLUG[g.slug]).filter((g) => passesFilter(g.slug)),
+        )
+        if (items.length === 0) return null
+        return (
+          <div className="gift-category" key={category.title}>
+            <h3 className="gift-category-title">{category.title}</h3>
+            <div className="gift-grid">
+              {items.map((gift) => (
+                <GiftCard key={gift.slug} gift={gift} bought={isBought(gift.slug)}
+                  onPix={setSelected} />
+              ))}
             </div>
-          )
-        })
-      ) : (
-        <div className="gift-grid">
-          {flat.map((gift) => (
-            <GiftCard key={gift.slug} gift={gift} bought={isBought(gift.slug)}
-              showCategory onPix={setSelected} />
-          ))}
-        </div>
-      )}
+          </div>
+        )
+      })}
 
-      {flat.length === 0 && (
+      {visibleCount === 0 && (
         <p className="section-sub" style={{ marginTop: '2rem' }}>
           {filter === 'comprados'
             ? 'Nenhum presente foi escolhido ainda — seja o primeiro! 🤍'

@@ -46,9 +46,11 @@ async function fetchForecast() {
   }))
 }
 
-// Média histórica: mesmos 7 dias nos últimos 10 anos
+// Média histórica: mesmos 7 dias nos últimos 10 anos.
+// Tolerante a falhas: cada ano é independente (allSettled), e a média é
+// calculada com os anos que responderam. Só falha se NENHUM ano vier.
 async function fetchHistoricalAverage() {
-  const perYear = await Promise.all(
+  const settled = await Promise.allSettled(
     HISTORY_YEARS.map(async (year) => {
       const start = WEEK_START.replace('2026', String(year))
       const end = WEEK_END.replace('2026', String(year))
@@ -63,8 +65,13 @@ async function fetchHistoricalAverage() {
     }),
   )
 
+  const perYear = settled
+    .filter((r) => r.status === 'fulfilled' && r.value?.temperature_2m_max)
+    .map((r) => r.value)
+  if (perYear.length === 0) throw new Error('nenhum ano histórico disponível')
+
   return Array.from({ length: 7 }, (_, i) => {
-    const valid = perYear.filter((d) => d?.temperature_2m_max?.[i] !== null)
+    const valid = perYear.filter((d) => d?.temperature_2m_max?.[i] != null)
     const avg = (values) => values.reduce((a, b) => a + b, 0) / values.length
     const rainyYears = valid.filter((d) => (d.precipitation_sum[i] ?? 0) >= 1).length
     const date = new Date(`${WEEK_START}T12:00:00-03:00`)
@@ -78,6 +85,23 @@ async function fetchHistoricalAverage() {
   })
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+// Tenta a previsão oficial e, se ainda não existe, a média histórica.
+// Repete a sequência algumas vezes antes de desistir, para não sumir com o
+// quadro por causa de uma falha momentânea de rede/limite da API.
+async function loadWeather(attempt = 0) {
+  try {
+    const data = await fetchForecast()
+    return { data, mode: 'forecast' }
+  } catch {
+    const data = await fetchHistoricalAverage()
+    return { data, mode: 'history' }
+  }
+}
+
 export default function Weather() {
   const [days, setDays] = useState(null)
   const [mode, setMode] = useState(null) // 'forecast' | 'history'
@@ -85,23 +109,26 @@ export default function Weather() {
 
   useEffect(() => {
     let cancelled = false
-    fetchForecast()
-      .then((data) => {
-        if (!cancelled) {
-          setDays(data)
-          setMode('forecast')
+
+    async function run() {
+      // até 3 tentativas com espera crescente antes de mostrar o erro
+      for (let attempt = 0; attempt < 3 && !cancelled; attempt++) {
+        try {
+          const { data, mode: resolvedMode } = await loadWeather()
+          if (!cancelled) {
+            setDays(data)
+            setMode(resolvedMode)
+            setError(false)
+          }
+          return
+        } catch {
+          if (attempt < 2) await sleep(1500 * (attempt + 1))
         }
-      })
-      .catch(() =>
-        fetchHistoricalAverage()
-          .then((data) => {
-            if (!cancelled) {
-              setDays(data)
-              setMode('history')
-            }
-          })
-          .catch(() => !cancelled && setError(true)),
-      )
+      }
+      if (!cancelled) setError(true)
+    }
+
+    run()
     return () => {
       cancelled = true
     }

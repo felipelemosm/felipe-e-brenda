@@ -237,10 +237,11 @@ main, .nav, .footer { position: relative; z-index: 1; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 22%;
+  object-position: center 20%;
   display: block;
   opacity: 0;
   transition: opacity 1.2s ease;
+  transform: scale(1.12) translateX(3%);
 }
 .hero-photo img.visible { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
