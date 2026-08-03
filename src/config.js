@@ -20,3 +20,10 @@ export const CARD_PAYMENT_LINK = ''
 // site religioso (mesma planilha, aba "Presentes"). Não troque sem trocar no
 // outro site também.
 export const GIFT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbybC6c9D1RjAci0Fz0JGmzzjU8HKQr2oF4q-trkIEN33NX1GkiEy06-pOy-BddInP3T/exec'
+
+
+// ---------- Mensagens UNIFICADAS (compartilhadas entre os dois sites) ----------
+// Como os presentes, o mural de mensagens é único: os dois sites gravam e leem
+// as mensagens deste mesmo endpoint (Apps Script do site religioso, aba
+// "Mensagens"), para que o mural seja o mesmo nos dois.
+export const MESSAGES_ENDPOINT = 'https://script.google.com/macros/s/AKfycbybC6c9D1RjAci0Fz0JGmzzjU8HKQr2oF4q-trkIEN33NX1GkiEy06-pOy-BddInP3T/exec'

@@ -3,6 +3,8 @@
 // Formatos aceitos: jpg, jpeg, png e webp.
 // Campos opcionais por capítulo: photoPosition ('top' etc., para ajustar o
 // enquadramento) e noPhoto (capítulo só com texto, sem espaço de foto).
+import HistoriaGaleria from '../components/HistoriaGaleria.jsx'
+
 const photos = import.meta.glob('../assets/historia/*.{jpg,jpeg,png,webp}', {
   eager: true,
   import: 'default',
@@ -45,14 +47,12 @@ const CHAPTERS = [
     date: '2019',
     title: 'A primeira grande distância',
     text: 'O amor foi colocado à prova. Brenda realizou um intercâmbio de três meses na Espanha e, no fim do ano, Felipe passou outros três meses em Orlando, nos Estados Unidos. Entre fusos horários, chamadas de vídeo e muita saudade, aprendemos que a distância nunca seria maior do que o amor que nos unia.',
-    photoPosition: 'top',
   },
   {
     slug: '2020-volta-brasil',
     date: '2020',
     title: 'Esperança em meio à pandemia',
     text: 'O ano começou ainda marcado pela distância, mas logo o mundo inteiro precisou parar por causa da pandemia. Mesmo em meio às incertezas, nosso relacionamento permaneceu firme. Foi também quando Brenda decidiu buscar os sacramentos da Iniciação Cristã, um sonho que precisou ser adiado por causa da pandemia.',
-    photoPosition: 'top',
   },
   {
     slug: '2021-ufmg',
@@ -71,7 +71,7 @@ const CHAPTERS = [
     date: '2023',
     title: 'O ano das grandes graças',
     text: 'Com o retorno de Felipe ao Brasil, finalmente pudemos viver novamente o namoro de perto. Começamos a servir juntos na Obra Jovem da Divina Providência, participamos da Jornada Mundial da Juventude em Lisboa, onde experimentamos de forma intensa a beleza da Igreja, e Felipe teve a alegria de cumprimentar o Papa Francisco. Ainda naquele ano, Brenda foi chamada para o ministério de Ministra Extraordinária da Sagrada Comunhão e conheceu, pela primeira vez, o Santuário Nacional de Nossa Senhora Aparecida. Foi um ano que fortaleceu profundamente nossa fé e confirmou a missão que Deus preparava para nós.',
-    photoPosition: 'top',
+    photoPosition: 'center 72%',
   },
   {
     slug: '2024-formatura-ojdp',
@@ -129,6 +129,8 @@ export default function Historia() {
           )
         })}
       </div>
+
+      <HistoriaGaleria />
     </section>
   )
 }

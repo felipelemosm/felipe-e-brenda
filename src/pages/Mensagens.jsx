@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BACKEND_ENDPOINT } from '../config.js'
+import { MESSAGES_ENDPOINT } from '../config.js'
 
 function MessagesWall({ messages }) {
   if (messages.length === 0) return null
@@ -24,9 +24,9 @@ export default function Mensagens() {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
-    if (!BACKEND_ENDPOINT) return
+    if (!MESSAGES_ENDPOINT) return
     let cancelled = false
-    fetch(`${BACKEND_ENDPOINT}?action=mensagens`)
+    fetch(`${MESSAGES_ENDPOINT}?action=mensagens`)
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && Array.isArray(data.mensagens)) {
@@ -39,10 +39,10 @@ export default function Mensagens() {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    if (!BACKEND_ENDPOINT) return
+    if (!MESSAGES_ENDPOINT) return
     setStatus('sending')
     try {
-      await fetch(BACKEND_ENDPOINT, {
+      await fetch(MESSAGES_ENDPOINT, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -83,7 +83,7 @@ export default function Mensagens() {
         todas, muitas vezes, ao longo da vida.
       </p>
 
-      {!BACKEND_ENDPOINT && (
+      {!MESSAGES_ENDPOINT && (
         <p className="rsvp-soon">
           O mural de mensagens abrirá em breve por aqui. Enquanto isso, fale diretamente
           com os noivos. 💌
@@ -112,7 +112,7 @@ export default function Mensagens() {
         )}
 
         <button className="btn rsvp-submit" type="submit"
-          disabled={!BACKEND_ENDPOINT || status === 'sending'}>
+          disabled={!MESSAGES_ENDPOINT || status === 'sending'}>
           {status === 'sending' ? 'Enviando…' : 'Enviar mensagem'}
         </button>
       </form>

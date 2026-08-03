@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { BACKEND_ENDPOINT } from '../config.js'
+import { MESSAGES_ENDPOINT } from '../config.js'
 
 const SLIDE_INTERVAL_MS = 7000
 
@@ -9,9 +9,9 @@ export default function MessagesSlideshow() {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
-    if (!BACKEND_ENDPOINT) return
+    if (!MESSAGES_ENDPOINT) return
     let cancelled = false
-    fetch(`${BACKEND_ENDPOINT}?action=mensagens`)
+    fetch(`${MESSAGES_ENDPOINT}?action=mensagens`)
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && Array.isArray(data.mensagens)) {
