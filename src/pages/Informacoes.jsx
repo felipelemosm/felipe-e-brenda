@@ -10,6 +10,60 @@ const LINK_CATOLICO = 'https://www.a12.com/redacaoa12/espiritualidade/como-me-to
 
 const INFOS = [
   {
+    slug: 'alimentacao',
+    icon: '🍽️',
+    eyebrow: 'Alimentação',
+    title: 'Tome um bom café da manhã',
+    text: (
+      <>
+        <p>
+          A missa será às <strong>10h30 da manhã</strong> e o almoço será servido apenas
+          na recepção, no Espaço Naya, após a celebração.
+        </p>
+        <p>
+          O acesso à recepção será liberado <strong>apenas após o fim da missa</strong>.
+        </p>
+        <p>
+          Recomendamos que todos se alimentem antes de sair de casa — assim ninguém
+          passa aperto e todos aproveitam a celebração inteira.
+        </p>
+      </>
+    ),
+  },
+  {
+    slug: 'traje',
+    icon: '⛪',
+    eyebrow: 'Traje',
+    title: 'Vista-se para a casa de Deus',
+    text: (
+      <>
+        <p>
+          A cerimônia será uma <strong>missa de casamento em uma igreja católica</strong>.
+          Pedimos carinhosamente que todos se vistam de forma adequada ao ambiente
+          sagrado — em especial às convidadas: prefira vestidos e trajes mais discretos,
+          evitando decotes acentuados, comprimentos muito curtos e ombros totalmente
+          descobertos.
+        </p>
+        <p>Um xale ou blazer resolve com elegância.</p>
+      </>
+    ),
+  },
+  {
+    slug: 'pontualidade',
+    icon: '🕰️',
+    eyebrow: 'Pontualidade',
+    title: 'Chegue com antecedência',
+    text: (
+      <>
+        <p>
+          As portas da capela abrem cedo: planeje chegar com cerca de{' '}
+          <strong>15 minutos de antecedência</strong>. A missa começará por volta das
+          10h30, e a entrada dos noivos acontece logo em seguida.
+        </p>
+      </>
+    ),
+  },
+  {
     slug: 'missa',
     icon: '✝️',
     eyebrow: 'A celebração',
@@ -32,24 +86,6 @@ const INFOS = [
       { label: 'A missa católica, passo a passo', href: LINK_MISSA_PASSO, kind: 'link' },
       { label: 'Roteiro: a Celebração do Matrimônio na Missa (PDF)', href: LINK_PDF, kind: 'pdf' },
     ],
-  },
-  {
-    slug: 'traje',
-    icon: '⛪',
-    eyebrow: 'Traje',
-    title: 'Vista-se para a casa de Deus',
-    text: (
-      <>
-        <p>
-          A cerimônia será uma <strong>missa de casamento em uma igreja católica</strong>.
-          Pedimos carinhosamente que todos se vistam de forma adequada ao ambiente
-          sagrado — em especial às convidadas: prefira vestidos e trajes mais discretos,
-          evitando decotes acentuados, comprimentos muito curtos e ombros totalmente
-          descobertos.
-        </p>
-        <p>Um xale ou blazer resolve com elegância.</p>
-      </>
-    ),
   },
   {
     slug: 'comunhao',
@@ -82,42 +118,6 @@ const INFOS = [
       { label: 'Vídeo: o que é a Igreja Católica', href: LINK_VIDEO_IGREJA, kind: 'video' },
       { label: 'Como se tornar católico', href: LINK_CATOLICO, kind: 'link' },
     ],
-  },
-  {
-    slug: 'alimentacao',
-    icon: '🍽️',
-    eyebrow: 'Alimentação',
-    title: 'Tome um bom café da manhã',
-    text: (
-      <>
-        <p>
-          A missa será às <strong>10h30 da manhã</strong> e o almoço será servido apenas
-          na recepção, no Espaço Naya, após a celebração.
-        </p>
-        <p>
-          O acesso à recepção será liberado <strong>apenas após o fim da missa</strong>.
-        </p>
-        <p>
-          Recomendamos que todos se alimentem antes de sair de casa — assim ninguém
-          passa aperto e todos aproveitam a celebração inteira.
-        </p>
-      </>
-    ),
-  },
-  {
-    slug: 'pontualidade',
-    icon: '🕰️',
-    eyebrow: 'Pontualidade',
-    title: 'Chegue com antecedência',
-    text: (
-      <>
-        <p>
-          As portas da capela abrem cedo: planeje chegar com cerca de{' '}
-          <strong>15 minutos de antecedência</strong>. A missa começará por volta das
-          10h30, e a entrada dos noivos acontece logo em seguida.
-        </p>
-      </>
-    ),
   },
 ]
 
