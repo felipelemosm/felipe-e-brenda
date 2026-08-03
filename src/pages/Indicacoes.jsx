@@ -59,6 +59,27 @@ const HOTEIS_BH = [
   },
 ]
 
+const HOTEIS_PAMPULHA = [
+  {
+    slug: 'hotel-cha-pampulha',
+    name: 'CHA Pampulha Design Hotel',
+    text: 'Às margens da Lagoa da Pampulha, moderno e muito bem avaliado — pertinho do Espaço Naya, onde será a recepção.',
+    map: 'CHA Pampulha Design Hotel, Belo Horizonte',
+  },
+  {
+    slug: 'hotel-suites-pampulha',
+    name: 'Suites Pampulha Hotel',
+    text: 'Confortável e central na Pampulha, com piscina na cobertura — a poucos minutos da Igrejinha e da recepção.',
+    map: 'Suites Pampulha Hotel, Belo Horizonte',
+  },
+  {
+    slug: 'hotel-bristol-jaragua',
+    name: 'Bristol Jaraguá',
+    text: 'Boa estrutura com piscina e sauna, próximo ao Mineirão e ao aeroporto da Pampulha.',
+    map: 'Bristol Jaraguá Belo Horizonte',
+  },
+]
+
 const PASSEIOS = [
   {
     slug: 'passeio-pampulha',
@@ -147,6 +168,13 @@ export default function Indicacoes() {
         title="Hotéis perto da capela"
         sub="Na região da Savassi e do bairro Funcionários, a poucos minutos da Praça João Pessoa."
         items={HOTEIS_BH}
+      />
+
+      <RecGroup
+        eyebrow="Onde ficar"
+        title="Hotéis perto da recepção"
+        sub="Na Pampulha, pertinho do Espaço Naya, para quem prefere ficar perto da festa."
+        items={HOTEIS_PAMPULHA}
       />
 
       <RecGroup

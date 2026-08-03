@@ -1316,24 +1316,15 @@ main, .nav, .footer { position: relative; z-index: 1; }
   color: var(--paper);
   border-color: var(--gold-deep);
 }
-/* ---------- Informações: vídeo e links ---------- */
-.info-video {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
+/* ---------- Informações: CTA e links ---------- */
+.info-cta {
   margin-top: 1.2rem;
-  border: 1px solid var(--gold-soft);
-  background: var(--gold-wash);
-}
-.info-video iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
+  font-size: 1.02rem;
+  color: var(--gold-dark);
+  font-style: italic;
 }
 .info-links {
-  margin-top: 1.1rem;
+  margin-top: 0.6rem;
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -1353,6 +1344,7 @@ main, .nav, .footer { position: relative; z-index: 1; }
 .info-link:hover { color: var(--gold-dark); border-color: var(--gold); }
 .info-link::before { content: '↗'; font-size: 0.82rem; color: var(--gold); }
 .info-link.pdf::before { content: '📄'; }
+.info-link.video::before { content: '▶'; }
 /* ---------- Presentes: controles, item comprado e ajuda ---------- */
 .gift-card { position: relative; }
 .gift-controls {
@@ -1414,4 +1406,40 @@ main, .nav, .footer { position: relative; z-index: 1; }
 .gift-help .btn.ghost { border: 1px solid var(--gold-deep); }
 @media (max-width: 640px) {
   .gift-help { flex-direction: column; align-items: center; text-align: center; }
+}
+/* ---------- Mural de mensagens (página Mensagens) ---------- */
+.messages-wall {
+  max-width: 900px;
+  margin: 3.4rem auto 0;
+}
+.messages-wall-title {
+  font-size: 2rem;
+  color: var(--gold-deep);
+  text-align: center;
+  margin-bottom: 1.6rem;
+}
+.messages-wall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+  text-align: left;
+}
+.wall-card {
+  background: var(--paper);
+  border: 1px solid var(--gold-soft);
+  border-top: 3px solid var(--gold);
+  padding: 1.3rem 1.3rem 1.1rem;
+  margin: 0;
+}
+.wall-card blockquote {
+  margin: 0 0 0.7rem;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.wall-card figcaption {
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: var(--gold-deep);
 }

@@ -1,11 +1,11 @@
-// Vídeos e links de formação católica por seção. Para trocar um vídeo, basta
-// substituir o ID do YouTube abaixo.
-const VIDEO_MISSA = 'ELgn6jdGA_I' // Casamento católico: tudo sobre a cerimônia
-const VIDEO_EUCARISTIA = 'YzuEyaMH3vQ' // Sacramento da Eucaristia
-
+// Links de formação católica por seção. Cada link tem um "kind" que muda o
+// ícone: 'video' (▶), 'pdf' (📄) ou 'link' (↗).
+const LINK_VIDEO_MISSA = 'https://www.youtube.com/watch?v=ELgn6jdGA_I'
 const LINK_MISSA_PASSO = 'https://formacao.cancaonova.com/igreja/catequese/voce-sabe-quais-sao-as-partes-da-missa-e-seus-elementos/'
 const LINK_PDF = './celebracao-do-matrimonio-na-missa.pdf'
+const LINK_VIDEO_EUCARISTIA = 'https://www.youtube.com/watch?v=YzuEyaMH3vQ'
 const LINK_EUCARISTIA = 'https://formacao.cancaonova.com/igreja/doutrina/o-sacramento-da-eucaristia/'
+const LINK_VIDEO_IGREJA = 'https://www.youtube.com/watch?v=q4BO3LpQgHk'
 const LINK_CATOLICO = 'https://www.a12.com/redacaoa12/espiritualidade/como-me-tornar-catolico'
 
 const INFOS = [
@@ -21,16 +21,16 @@ const INFOS = [
           dentro de uma igreja católica, com duração esperada de <strong>1h a 1h30</strong>.
         </p>
         <p>
-          Se você não é católico ou não conhece o rito, não se preocupe: deixamos aqui um
-          vídeo mostrando como a missa de casamento acontece, um guia das partes da missa
-          e o roteiro da nossa celebração.
+          Se você não é católico ou não conhece o rito, não se preocupe: reunimos alguns
+          materiais que explicam, com calma, como tudo vai acontecer.
         </p>
       </>
     ),
-    video: { id: VIDEO_MISSA, title: 'Como funciona a missa de casamento católico' },
+    cta: 'Clique aqui e entenda como será a nossa missa:',
     links: [
-      { label: 'A missa católica, passo a passo', href: LINK_MISSA_PASSO },
-      { label: 'Roteiro: a Celebração do Matrimônio na Missa (PDF)', href: LINK_PDF, pdf: true },
+      { label: 'Vídeo: como é a missa de casamento católico', href: LINK_VIDEO_MISSA, kind: 'video' },
+      { label: 'A missa católica, passo a passo', href: LINK_MISSA_PASSO, kind: 'link' },
+      { label: 'Roteiro: a Celebração do Matrimônio na Missa (PDF)', href: LINK_PDF, kind: 'pdf' },
     ],
   },
   {
@@ -71,15 +71,16 @@ const INFOS = [
         </p>
         <p>
           Para nós, católicos, a Eucaristia é o próprio Cristo — Corpo e Sangue,
-          realmente presente. Se tiver curiosidade sobre o que a Igreja crê, deixamos um
-          vídeo e alguns links abaixo, com todo o carinho.
+          realmente presente. Se tiver curiosidade sobre a nossa fé, é só clicar.
         </p>
       </>
     ),
-    video: { id: VIDEO_EUCARISTIA, title: 'O que é a Sagrada Eucaristia' },
+    cta: 'Clique aqui e conheça um pouco mais da nossa fé:',
     links: [
-      { label: 'O que a Igreja crê sobre a Eucaristia', href: LINK_EUCARISTIA },
-      { label: 'Como se tornar católico', href: LINK_CATOLICO },
+      { label: 'Vídeo: o que é a Sagrada Eucaristia', href: LINK_VIDEO_EUCARISTIA, kind: 'video' },
+      { label: 'O que a Igreja crê sobre a Eucaristia', href: LINK_EUCARISTIA, kind: 'link' },
+      { label: 'Vídeo: o que é a Igreja Católica', href: LINK_VIDEO_IGREJA, kind: 'video' },
+      { label: 'Como se tornar católico', href: LINK_CATOLICO, kind: 'link' },
     ],
   },
   {
@@ -142,21 +143,11 @@ export default function Informacoes() {
               <div className="info-eyebrow">{info.eyebrow}</div>
               <h3 className="info-title">{info.title}</h3>
               <div className="info-text">{info.text}</div>
-              {info.video && (
-                <div className="info-video">
-                  <iframe
-                    src={`https://www.youtube-nocookie.com/embed/${info.video.id}`}
-                    title={info.video.title}
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              )}
+              {info.cta && <p className="info-cta">{info.cta}</p>}
               {info.links && (
                 <div className="info-links">
                   {info.links.map((link) => (
-                    <a key={link.href} className={`info-link${link.pdf ? ' pdf' : ''}`}
+                    <a key={link.href} className={`info-link ${link.kind}`}
                       href={link.href} target="_blank" rel="noopener noreferrer">
                       {link.label}
                     </a>

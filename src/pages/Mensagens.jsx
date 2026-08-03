@@ -1,9 +1,41 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BACKEND_ENDPOINT } from '../config.js'
+
+function MessagesWall({ messages }) {
+  if (messages.length === 0) return null
+  return (
+    <div className="messages-wall">
+      <h3 className="messages-wall-title script">Mural de mensagens</h3>
+      <div className="messages-wall-grid">
+        {messages.map((m, i) => (
+          <figure className="wall-card" key={i}>
+            <blockquote>“{m.mensagem}”</blockquote>
+            <figcaption>— {m.nome}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export default function Mensagens() {
   const [form, setForm] = useState({ nome: '', mensagem: '' })
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [messages, setMessages] = useState([])
+
+  useEffect(() => {
+    if (!BACKEND_ENDPOINT) return
+    let cancelled = false
+    fetch(`${BACKEND_ENDPOINT}?action=mensagens`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && Array.isArray(data.mensagens)) {
+          setMessages(data.mensagens.filter((m) => m.mensagem))
+        }
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [])
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -16,6 +48,8 @@ export default function Mensagens() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ tipo: 'mensagem', ...form }),
       })
+      // adiciona ao mural na hora (o back-end é no-cors e não devolve a lista)
+      setMessages((prev) => [{ nome: form.nome, mensagem: form.mensagem }, ...prev])
       setStatus('sent')
     } catch {
       setStatus('error')
@@ -28,12 +62,13 @@ export default function Mensagens() {
         <div className="section-eyebrow">Mensagem recebida</div>
         <h2 className="section-title script">Obrigado!</h2>
         <p className="section-sub">
-          Seu carinho foi guardado com a gente — em breve sua mensagem aparece na página
-          inicial do site. 🤍
+          Seu carinho foi guardado com a gente e já entrou no mural abaixo — também
+          aparece na página inicial do site. 🤍
         </p>
         <button className="btn" onClick={() => { setForm({ nome: '', mensagem: '' }); setStatus('idle') }}>
           Escrever outra mensagem
         </button>
+        <MessagesWall messages={messages} />
       </section>
     )
   }
@@ -44,8 +79,8 @@ export default function Mensagens() {
       <h2 className="section-title script">Mensagens aos Noivos</h2>
       <p className="section-sub">
         Deixe aqui seu recado, conselho, oração ou memória com a gente. As mensagens são
-        guardadas e exibidas na página inicial do site — e vamos reler todas, muitas
-        vezes, ao longo da vida.
+        guardadas e exibidas no mural abaixo e na página inicial do site — e vamos reler
+        todas, muitas vezes, ao longo da vida.
       </p>
 
       {!BACKEND_ENDPOINT && (
@@ -81,6 +116,8 @@ export default function Mensagens() {
           {status === 'sending' ? 'Enviando…' : 'Enviar mensagem'}
         </button>
       </form>
+
+      <MessagesWall messages={messages} />
     </section>
   )
 }
