@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { GIFT_ENDPOINT, PIX_KEY, CARD_PAYMENT_LINK } from '../config.js'
+import { GIFT_ENDPOINT, PIX_KEY, CARD_LINKS } from '../config.js'
 
 const GROOM_PHONE_DISPLAY = '(31) 98323-3101'
 const GROOM_PHONE_WA = '5531983233101'
@@ -178,11 +178,12 @@ function GiftCard({ gift, bought, onPix }) {
         ) : (
           <>
             <button className="btn gift-btn" onClick={() => onPix(gift)}>
-              Presentear
+              PIX
             </button>
-            {CARD_PAYMENT_LINK && (
+            {CARD_LINKS[gift.price] && (
               <a className="btn ghost gift-btn" target="_blank" rel="noopener noreferrer"
-                href={CARD_PAYMENT_LINK}>
+                href={CARD_LINKS[gift.price]}
+                title="No cartão incidem taxas para os dois lados — se puder, prefira o PIX">
                 Cartão
               </a>
             )}
@@ -257,6 +258,21 @@ function PixModal({ gift, onClose, onRegistered }) {
           O valor é uma referência carinhosa — qualquer quantia nos ajuda a montar o
           nosso lar. Obrigado! 🤍
         </p>
+
+        {CARD_LINKS[gift.price] && (
+          <div className="modal-card">
+            <span className="modal-or">ou, se preferir</span>
+            <a className="btn ghost" target="_blank" rel="noopener noreferrer"
+              href={CARD_LINKS[gift.price]}>
+              Pagar com cartão de crédito
+            </a>
+            <p className="modal-card-note">
+              No cartão incidem taxas para os dois lados. Se puder,{' '}
+              <strong>prefira o PIX</strong> — dá para parcelar ou agendar pelo seu
+              próprio banco.
+            </p>
+          </div>
+        )}
 
         {GIFT_ENDPOINT && (
           <div className="gift-confirm">
@@ -358,8 +374,14 @@ export default function Presentes() {
         </p>
         <p className="section-sub">
           A lista é a mesma nos dois sites: quando alguém escolhe um presente, ele aparece
-          como “já comprado” para todos. Cada item pode ser presenteado por PIX, e o valor
-          é só uma referência — qualquer quantia é bem-vinda.
+          como “já comprado” para todos. O valor é só uma referência — qualquer quantia é
+          bem-vinda.
+        </p>
+        <p className="gift-pix-note">
+          💚 Damos preferência ao <strong>PIX</strong>: é sem taxa e o valor chega
+          inteirinho para nós. Se precisar, dá para parcelar ou agendar pelo seu próprio
+          banco. O pagamento por <strong>cartão de crédito</strong> também está
+          disponível, mas nele incidem taxas para os dois lados.
         </p>
       </div>
 

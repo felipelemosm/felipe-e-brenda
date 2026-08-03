@@ -1518,3 +1518,38 @@ main, .nav, .footer { position: relative; z-index: 1; }
   transition: background .2s, transform .2s;
 }
 .galeria-dots .dot.active { background: var(--gold-deep); transform: scale(1.3); }
+/* ---------- Presentes: PIX preferencial e cartão ---------- */
+.gift-pix-note {
+  max-width: 620px;
+  margin: 0.4rem auto 0;
+  padding: 0.9rem 1.2rem;
+  background: var(--gold-wash);
+  border: 1px solid var(--gold-soft);
+  font-size: 0.98rem;
+  color: var(--ink);
+}
+.modal-card {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gold-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.modal-or {
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.modal-card .btn.ghost {
+  border: 1px solid var(--gold-deep);
+  cursor: pointer;
+}
+.modal-card-note {
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  line-height: 1.5;
+}
