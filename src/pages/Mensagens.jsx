@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react'
 import { MESSAGES_ENDPOINT } from '../config.js'
+import Spinner from '../components/Spinner.jsx'
 
-function MessagesWall({ messages }) {
+function MessagesWall({ messages, loading }) {
+  if (loading) {
+    return (
+      <div className="messages-wall">
+        <h3 className="messages-wall-title script">Mural de mensagens</h3>
+        <Spinner label="Carregando mensagens…" />
+      </div>
+    )
+  }
   if (messages.length === 0) return null
   return (
     <div className="messages-wall">
@@ -22,6 +31,7 @@ export default function Mensagens() {
   const [form, setForm] = useState({ nome: '', mensagem: '' })
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [messages, setMessages] = useState([])
+  const [loadingWall, setLoadingWall] = useState(Boolean(MESSAGES_ENDPOINT))
 
   useEffect(() => {
     if (!MESSAGES_ENDPOINT) return
@@ -34,6 +44,7 @@ export default function Mensagens() {
         }
       })
       .catch(() => {})
+      .finally(() => !cancelled && setLoadingWall(false))
     return () => { cancelled = true }
   }, [])
 
@@ -68,7 +79,7 @@ export default function Mensagens() {
         <button className="btn" onClick={() => { setForm({ nome: '', mensagem: '' }); setStatus('idle') }}>
           Escrever outra mensagem
         </button>
-        <MessagesWall messages={messages} />
+        <MessagesWall messages={messages} loading={loadingWall} />
       </section>
     )
   }
@@ -117,7 +128,7 @@ export default function Mensagens() {
         </button>
       </form>
 
-      <MessagesWall messages={messages} />
+      <MessagesWall messages={messages} loading={loadingWall} />
     </section>
   )
 }

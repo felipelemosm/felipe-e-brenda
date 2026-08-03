@@ -1553,3 +1553,29 @@ main, .nav, .footer { position: relative; z-index: 1; }
   font-style: italic;
   line-height: 1.5;
 }
+/* ---------- Indicador de carregamento (spinner) ---------- */
+.loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.6rem 1rem;
+}
+.spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--gold-soft);
+  border-top-color: var(--gold-deep);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation-duration: 2.2s; }
+}
+.loading-label {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}

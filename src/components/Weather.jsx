@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Spinner from './Spinner.jsx'
 
 // Belo Horizonte, MG
 const LAT = -19.9167
@@ -144,7 +145,7 @@ export default function Weather() {
       <div className="weather-title">O tempo na semana da festa — Belo Horizonte</div>
 
       {!days ? (
-        <p className="weather-loading">Consultando o céu de outubro…</p>
+        <Spinner label="Consultando o céu de outubro…" />
       ) : (
         <>
           {willRain !== null && (

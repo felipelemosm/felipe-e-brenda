@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MESSAGES_ENDPOINT } from '../config.js'
+import Spinner from './Spinner.jsx'
 
 const SLIDE_INTERVAL_MS = 7000
 
 export default function MessagesSlideshow() {
   const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(Boolean(MESSAGES_ENDPOINT))
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -19,6 +21,7 @@ export default function MessagesSlideshow() {
         }
       })
       .catch(() => {})
+      .finally(() => !cancelled && setLoading(false))
     return () => {
       cancelled = true
     }
@@ -35,7 +38,9 @@ export default function MessagesSlideshow() {
   return (
     <div className="messages-slideshow">
       <div className="messages-title">Mensagens aos noivos</div>
-      {messages.length === 0 ? (
+      {loading ? (
+        <Spinner label="Carregando mensagens…" />
+      ) : messages.length === 0 ? (
         <p className="messages-empty">
           Seja a primeira pessoa a deixar um carinho para nós!{' '}
           <Link to="/mensagens">Escrever mensagem 💌</Link>
