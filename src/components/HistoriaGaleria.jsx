@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLightbox } from './Lightbox.jsx'
 
 // Slideshow de fotos do casal ao fim da timeline. As imagens ficam em
 // src/assets/historia-galeria/ (jpg, jpeg, png ou webp) e entram em ordem
@@ -14,6 +15,7 @@ const INTERVAL_MS = 4500
 export default function HistoriaGaleria() {
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
+  const openLightbox = useLightbox()
 
   useEffect(() => {
     if (paused || PHOTOS.length < 2) return
@@ -34,15 +36,18 @@ export default function HistoriaGaleria() {
       <h3 className="galeria-title script">Nossos momentos</h3>
       <p className="galeria-sub">Um retrato de tantos capítulos que vivemos juntos.</p>
 
-      <div className="galeria-stage"
+      <div className="galeria-stage zoomable"
+        onClick={() => openLightbox(PHOTOS[index], 'Felipe e Brenda')}
         onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
         {PHOTOS.map((src, i) => (
           <img key={i} src={src} alt="Felipe e Brenda"
             className={i === index ? 'visible' : undefined}
             loading={i === 0 ? 'eager' : 'lazy'} />
         ))}
-        <button className="galeria-nav prev" onClick={() => go(-1)} aria-label="Foto anterior">‹</button>
-        <button className="galeria-nav next" onClick={() => go(1)} aria-label="Próxima foto">›</button>
+        <button className="galeria-nav prev"
+          onClick={(e) => { e.stopPropagation(); go(-1) }} aria-label="Foto anterior">‹</button>
+        <button className="galeria-nav next"
+          onClick={(e) => { e.stopPropagation(); go(1) }} aria-label="Próxima foto">›</button>
       </div>
 
       <div className="galeria-dots" role="presentation">

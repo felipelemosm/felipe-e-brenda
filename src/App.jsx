@@ -12,10 +12,11 @@ import Mensagens from './pages/Mensagens.jsx'
 import Presentes from './pages/Presentes.jsx'
 import Presenca from './pages/Presenca.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
+import { LightboxProvider } from './components/Lightbox.jsx'
 
 export default function App() {
   return (
-    <>
+    <LightboxProvider>
       <FloralBackdrop />
       <ScrollToTop />
       <Nav />
@@ -33,6 +34,6 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
-    </>
+    </LightboxProvider>
   )
 }

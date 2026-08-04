@@ -1579,3 +1579,40 @@ main, .nav, .footer { position: relative; z-index: 1; }
   font-style: italic;
   color: var(--ink-soft);
 }
+/* ---------- Lightbox (foto ampliada) ---------- */
+.zoomable { cursor: zoom-in; }
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(40, 36, 30, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  cursor: zoom-out;
+  animation: lightbox-in 0.2s ease;
+}
+@keyframes lightbox-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lightbox { animation: none; } }
+.lightbox img {
+  max-width: 96vw;
+  max-height: 92vh;
+  object-fit: contain;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  cursor: default;
+  border: 3px solid var(--paper);
+}
+.lightbox-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 1.3rem;
+  background: none;
+  border: none;
+  color: var(--paper);
+  font-size: 2.6rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.85;
+}
+.lightbox-close:hover { opacity: 1; }

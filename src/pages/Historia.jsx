@@ -4,6 +4,7 @@
 // Campos opcionais por capítulo: photoPosition ('top' etc., para ajustar o
 // enquadramento) e noPhoto (capítulo só com texto, sem espaço de foto).
 import HistoriaGaleria from '../components/HistoriaGaleria.jsx'
+import { useLightbox } from '../components/Lightbox.jsx'
 
 const photos = import.meta.glob('../assets/historia/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -65,6 +66,7 @@ const CHAPTERS = [
     date: '2022',
     title: 'Mais uma prova de amor',
     text: 'Felipe mudou-se para a Alemanha para um intercâmbio que acabou se transformando em um ano inteiro fora do Brasil. Foi um período desafiador, de muitas despedidas e expectativas, mas também de amadurecimento. Permanecemos firmes na fé, confiando que Deus sustentaria nosso relacionamento até o reencontro.',
+    photoPosition: 'top',
   },
   {
     slug: '2023-reencontro',
@@ -94,6 +96,7 @@ const CHAPTERS = [
 ]
 
 export default function Historia() {
+  const openLightbox = useLightbox()
   return (
     <section className="section">
       <div className="section-eyebrow">Do colégio ao altar</div>
@@ -108,7 +111,8 @@ export default function Historia() {
           return (
             <div className="t-item" key={chapter.slug}>
               {chapter.noPhoto ? null : photo ? (
-                <figure className="t-photo">
+                <figure className="t-photo zoomable"
+                  onClick={() => openLightbox(photo, `${chapter.title} — ${chapter.date}`)}>
                   <img src={photo} alt={`${chapter.title} — ${chapter.date}`} loading="lazy"
                     style={chapter.photoPosition ? { objectPosition: chapter.photoPosition } : undefined} />
                 </figure>
