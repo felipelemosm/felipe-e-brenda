@@ -102,8 +102,7 @@ const INFOS = [
         </p>
         <p>
           Quem não for católico, ou preferir não comungar, pode permanecer
-          tranquilamente no banco ou aproximar-se de braços cruzados sobre o peito para
-          receber uma bênção.
+          tranquilamente no banco durante esse momento.
         </p>
         <p>
           Para nós, católicos, a Eucaristia é o próprio Cristo — Corpo e Sangue,
