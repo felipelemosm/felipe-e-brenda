@@ -35,9 +35,10 @@ export default function HistoriaGaleria() {
     <div className="galeria">
       <h3 className="galeria-title script">Nossos momentos</h3>
       <p className="galeria-sub">Um retrato de tantos capítulos que vivemos juntos.</p>
+      <p className="galeria-hint">🔍 Clique na foto para ampliar e navegar por todas.</p>
 
       <div className="galeria-stage zoomable"
-        onClick={() => openLightbox(PHOTOS[index], 'Felipe e Brenda')}
+        onClick={() => openLightbox(PHOTOS, index, 'Felipe e Brenda')}
         onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
         {PHOTOS.map((src, i) => (
           <img key={i} src={src} alt="Felipe e Brenda"

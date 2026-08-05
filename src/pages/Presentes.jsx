@@ -254,6 +254,14 @@ function PixModal({ gift, onClose, onRegistered }) {
           <div className="modal-qr placeholder">QR Code em breve</div>
         )}
 
+        <div className="modal-valor">
+          <span className="modal-valor-label">Ao escanear o QR Code, digite o valor:</span>
+          <strong className="modal-valor-num">{formatPrice(gift.price)}</strong>
+          <span className="modal-valor-obs">
+            O QR Code não preenche o valor sozinho — é preciso digitá-lo.
+          </span>
+        </div>
+
         <div className="modal-pix-key">
           <span>Chave PIX (e-mail)</span>
           <code>{PIX_KEY}</code>

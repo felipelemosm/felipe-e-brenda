@@ -1080,7 +1080,7 @@ main, .nav, .footer { position: relative; z-index: 1; }
   margin: 0.4rem 0 0.1rem;
 }
 .modal-price {
-  font-size: 1.25rem;
+  font-size: 1.7rem;
   color: var(--gold-dark);
   margin-bottom: 1.1rem;
 }
@@ -1616,3 +1616,68 @@ main, .nav, .footer { position: relative; z-index: 1; }
   opacity: 0.85;
 }
 .lightbox-close:hover { opacity: 1; }
+/* ---------- Lightbox: navegação e dicas de ampliar ---------- */
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3.2rem;
+  height: 3.2rem;
+  border: none;
+  background: rgba(253, 251, 245, 0.14);
+  color: var(--paper);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s;
+  z-index: 2;
+}
+.lightbox-nav:hover { background: rgba(253, 251, 245, 0.28); }
+.lightbox-nav.prev { left: 1rem; }
+.lightbox-nav.next { right: 1rem; }
+.photo-hint {
+  display: inline-block;
+  font-size: 0.92rem;
+  color: var(--gold-deep);
+  font-style: italic;
+}
+.galeria-hint {
+  font-size: 0.9rem;
+  color: var(--gold-deep);
+  font-style: italic;
+  margin-top: -0.8rem;
+  margin-bottom: 1.2rem;
+}
+@media (max-width: 640px) {
+  .lightbox-nav { width: 2.6rem; height: 2.6rem; font-size: 1.6rem; }
+  .lightbox-nav.prev { left: 0.3rem; }
+  .lightbox-nav.next { right: 0.3rem; }
+}
+/* ---------- Modal PIX: valor em destaque ---------- */
+.modal-valor {
+  margin: 1rem 0 0.4rem;
+  padding: 0.9rem 1rem;
+  background: var(--gold-wash);
+  border: 1px solid var(--gold);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+.modal-valor-label {
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.modal-valor-num {
+  font-size: 2.4rem;
+  line-height: 1.1;
+  color: var(--gold-dark);
+  font-weight: 400;
+}
+.modal-valor-obs {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}

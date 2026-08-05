@@ -103,7 +103,8 @@ export default function Historia() {
       <h2 className="section-title script">Nossa História</h2>
       <p className="section-sub">
         Onze anos, três continentes e um amor que Deus conduziu do primeiro encontro
-        até o altar. Esta é a nossa história — de 2015 até o grande dia.
+        até o altar. Esta é a nossa história — de 2015 até o grande dia.{' '}
+        <span className="photo-hint">🔍 Toque nas fotos para vê-las ampliadas.</span>
       </p>
       <div className="timeline">
         {CHAPTERS.map((chapter) => {
@@ -112,7 +113,7 @@ export default function Historia() {
             <div className="t-item" key={chapter.slug}>
               {chapter.noPhoto ? null : photo ? (
                 <figure className="t-photo zoomable"
-                  onClick={() => openLightbox(photo, `${chapter.title} — ${chapter.date}`)}>
+                  onClick={() => openLightbox(photo, 0, `${chapter.title} — ${chapter.date}`)}>
                   <img src={photo} alt={`${chapter.title} — ${chapter.date}`} loading="lazy"
                     style={chapter.photoPosition ? { objectPosition: chapter.photoPosition } : undefined} />
                 </figure>
