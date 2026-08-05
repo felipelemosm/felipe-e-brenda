@@ -32,6 +32,7 @@ const CATEGORIES = [
       { slug: 'geladeira', name: 'Geladeira', price: 2800 },
       { slug: 'fogao', name: 'Fogão', price: 1000 },
       { slug: 'lava-louca', name: 'Lava-louças', price: 2000 },
+      { slug: 'maquina-sorvete-ninja', name: 'Máquina de sorvete Ninja', price: 2000 },
       { slug: 'panelas-tramontina', name: 'Jogo de panelas inox Tramontina', price: 450 },
       { slug: 'jogo-pratos', name: 'Jogo de pratos', price: 450 },
       { slug: 'faqueiro', name: 'Faqueiro', price: 450 },
