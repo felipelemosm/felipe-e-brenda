@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { MESSAGES_ENDPOINT } from '../config.js'
 import Spinner from './Spinner.jsx'
 
-const SLIDE_INTERVAL_MS = 7000
+const SLIDE_INTERVAL_MS = 12000
 
 export default function MessagesSlideshow() {
   const [messages, setMessages] = useState([])
@@ -27,13 +27,19 @@ export default function MessagesSlideshow() {
     }
   }, [])
 
+  // avança sozinho; reinicia a contagem sempre que o índice muda (inclusive na
+  // navegação manual), para a mensagem escolhida ter o tempo cheio de leitura.
   useEffect(() => {
     if (messages.length < 2) return
-    const id = setInterval(() => {
+    const id = setTimeout(() => {
       setIndex((current) => (current + 1) % messages.length)
     }, SLIDE_INTERVAL_MS)
-    return () => clearInterval(id)
-  }, [messages])
+    return () => clearTimeout(id)
+  }, [messages, index])
+
+  function go(delta) {
+    setIndex((current) => (current + delta + messages.length) % messages.length)
+  }
 
   return (
     <div className="messages-slideshow">
@@ -47,10 +53,20 @@ export default function MessagesSlideshow() {
         </p>
       ) : (
         <>
-          <figure className="message-slide" key={index}>
-            <blockquote>“{messages[index].mensagem}”</blockquote>
-            <figcaption>— {messages[index].nome}</figcaption>
-          </figure>
+          <div className="messages-viewer">
+            {messages.length > 1 && (
+              <button className="messages-nav prev" onClick={() => go(-1)}
+                aria-label="Mensagem anterior">‹</button>
+            )}
+            <figure className="message-slide" key={index}>
+              <blockquote>“{messages[index].mensagem}”</blockquote>
+              <figcaption>— {messages[index].nome}</figcaption>
+            </figure>
+            {messages.length > 1 && (
+              <button className="messages-nav next" onClick={() => go(1)}
+                aria-label="Próxima mensagem">›</button>
+            )}
+          </div>
           <div className="message-dots" role="presentation">
             {messages.slice(0, 12).map((_, i) => (
               <span key={i} className={i === index % 12 ? 'dot active' : 'dot'} />

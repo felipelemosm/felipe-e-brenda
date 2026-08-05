@@ -1701,3 +1701,29 @@ main, .nav, .footer { position: relative; z-index: 1; }
   color: var(--gold-deep);
   margin-top: 0.35rem;
 }
+/* ---------- Mural da home: navegação por setas ---------- */
+.messages-viewer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.messages-viewer .message-slide { flex: 1; }
+.messages-nav {
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid var(--gold-soft);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--gold-deep);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.messages-nav:hover { background: var(--gold-wash); border-color: var(--gold); }
+@media (max-width: 640px) {
+  .messages-nav { width: 1.9rem; height: 1.9rem; font-size: 1.1rem; }
+  .messages-viewer { gap: 0.3rem; }
+}
