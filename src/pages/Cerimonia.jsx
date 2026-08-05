@@ -18,6 +18,7 @@ export default function Cerimonia() {
     <section className="section">
       <div className="section-eyebrow">O grande dia</div>
       <h2 className="section-title script">A Cerimônia</h2>
+      <div className="ceremony-time">Sábado, 10 de outubro de 2026 · às 10h30</div>
       <div className="section-intro">
         <p className="section-sub">
           A celebração acontecerá na Capela Nossa Senhora da Conceição, no Colégio

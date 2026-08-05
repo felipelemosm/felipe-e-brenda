@@ -1681,3 +1681,23 @@ main, .nav, .footer { position: relative; z-index: 1; }
   font-style: italic;
   color: var(--ink-soft);
 }
+/* ---------- Horário em destaque (cerimônia e footer) ---------- */
+.ceremony-time {
+  text-align: center;
+  font-size: 1.15rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  border-top: 1px solid var(--gold-soft);
+  border-bottom: 1px solid var(--gold-soft);
+  padding: 0.7rem 0;
+  margin: 0.4rem auto 1.6rem;
+  max-width: 460px;
+}
+.footer-hora {
+  font-size: 0.82rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-top: 0.35rem;
+}
