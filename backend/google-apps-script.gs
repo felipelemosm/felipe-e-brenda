@@ -106,3 +106,43 @@ function doGet(e) {
 
   return ContentService.createTextOutput('Site Felipe & Brenda: back-end no ar ✔');
 }
+
+// ---------------------------------------------------------------------------
+// UTILITÁRIO (rodar UMA vez, à mão): leva as mensagens já deixadas nas
+// confirmações de presença (aba "Confirmações") para o mural (aba "Mensagens").
+// Não duplica — pode rodar de novo com segurança.
+// Como rodar: no editor do Apps Script, selecione a função
+// "migrarMensagensDasConfirmacoes" no seletor do topo e clique em ▷ Executar.
+// ---------------------------------------------------------------------------
+function migrarMensagensDasConfirmacoes() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const rsvp = ss.getSheetByName(RSVP_SHEET);
+  if (!rsvp || rsvp.getLastRow() < 2) {
+    Logger.log('Nenhuma confirmação para migrar.');
+    return;
+  }
+  const mural = getSheet(MESSAGES_SHEET, ['Data', 'Nome', 'Mensagem', 'Exibir']);
+
+  // mensagens já no mural, para não duplicar (chave = nome + mensagem)
+  const existentes = {};
+  if (mural.getLastRow() > 1) {
+    mural.getRange(2, 2, mural.getLastRow() - 1, 2).getValues().forEach(function (r) {
+      existentes[String(r[0]).trim() + '|' + String(r[1]).trim()] = true;
+    });
+  }
+
+  // Confirmações: Data(0) Nome(1) Contato(2) Presença(3) Pessoas(4) Mensagem(5)
+  const rows = rsvp.getRange(2, 1, rsvp.getLastRow() - 1, 6).getValues();
+  let migradas = 0;
+  rows.forEach(function (r) {
+    const nome = String(r[1] || '').trim();
+    const msg = String(r[5] || '').trim();
+    if (!msg) return;
+    const chave = nome + '|' + msg;
+    if (existentes[chave]) return;
+    mural.appendRow([r[0] || new Date(), nome, msg, 'Sim']);
+    existentes[chave] = true;
+    migradas++;
+  });
+  Logger.log('Mensagens migradas para o mural: ' + migradas);
+}
