@@ -1727,3 +1727,11 @@ main, .nav, .footer { position: relative; z-index: 1; }
   .messages-nav { width: 1.9rem; height: 1.9rem; font-size: 1.1rem; }
   .messages-viewer { gap: 0.3rem; }
 }
+/* ---------- Nota abaixo de um campo do formulário ---------- */
+.field-note {
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin-top: 0.3rem;
+}
