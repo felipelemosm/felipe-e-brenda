@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import fotoCapa from '../assets/foto-capa.jpeg'
 
-// Para adicionar mais fotos ao slideshow da capa, salve os arquivos em
-// src/assets/capa/ (jpg, jpeg, png ou webp). Elas entram em ordem alfabética,
-// depois da foto principal, trocando com fade a cada 6 segundos.
+// O slideshow da capa mostra as fotos de src/assets/capa/ (jpg, jpeg, png ou
+// webp), em ordem alfabética, trocando com fade a cada 6 segundos e começando
+// numa foto aleatória. Para adicionar mais, salve o arquivo nessa pasta.
 //
 // Cada foto recebe um data-frame com o nome do arquivo (ex.: capa-03), e o CSS
 // ajusta o enquadramento dela individualmente. Isso é necessário porque a
@@ -17,16 +16,13 @@ const extras = import.meta.glob('../assets/capa/*.{jpg,jpeg,png,webp}', {
   import: 'default',
 })
 
-const PHOTOS = [
-  { src: fotoCapa, frame: 'foto-capa', alt: 'Felipe e Brenda abraçados em um parque' },
-  ...Object.keys(extras)
-    .sort()
-    .map((key) => ({
-      src: extras[key],
-      frame: key.split('/').pop().replace(/\.[^.]+$/, ''),
-      alt: 'Felipe e Brenda',
-    })),
-]
+const PHOTOS = Object.keys(extras)
+  .sort()
+  .map((key) => ({
+    src: extras[key],
+    frame: key.split('/').pop().replace(/\.[^.]+$/, ''),
+    alt: 'Felipe e Brenda',
+  }))
 
 const SLIDE_INTERVAL_MS = 6000
 
