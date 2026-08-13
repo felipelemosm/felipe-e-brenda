@@ -248,14 +248,15 @@ main, .nav, .footer { position: relative; z-index: 1; }
    corta num eixo diferente em cada caso. Sem regra própria, o `center` deixa o
    casal fora do meio. Os valores abaixo empurram o corte para onde o casal está.
 
-   capa-01    1400x933   1.501  bem mais larga: corta as laterais (sobra 53% da largura)
-   capa-02     933x1400  0.666  mais alta: corta topo e base (sobra 83% da altura)
+   capa-01   1600x1391  1.150  estendida com desfoque em cima/baixo p/ mostrar mais do local
+   capa-02    877x1400  0.626  recortada à esquerda p/ centralizar o casal; corta topo/base
    capa-03     933x1400  0.666  mais alta: corta topo e base (sobra 83% da altura)
    capa-04     932x1400  0.666  mais alta: corta topo e base (sobra 83% da altura)      */
 
-/* casal fica à direita do centro; sem isso o corte pega jardim vazio à esquerda */
+/* foto estendida com bandas desfocadas em cima/baixo para revelar mais do local;
+   casal já centralizado, então o corte na largura fica no centro */
 .hero-photo img[data-frame='capa-01'] {
-  object-position: 62% center;
+  object-position: center;
 }
 
 /* casal ocupa a metade de baixo, sob a ramada: o corte favorece o chão */
