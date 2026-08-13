@@ -13,7 +13,9 @@ const PHOTOS = [fotoCapa, ...Object.keys(extras).sort().map((key) => extras[key]
 const SLIDE_INTERVAL_MS = 6000
 
 export default function HeroPhotos() {
-  const [index, setIndex] = useState(0)
+  // começa numa foto aleatória; a cada visita a capa abre diferente
+  const [start] = useState(() => Math.floor(Math.random() * PHOTOS.length))
+  const [index, setIndex] = useState(start)
 
   useEffect(() => {
     if (PHOTOS.length < 2) return
@@ -25,12 +27,19 @@ export default function HeroPhotos() {
 
   return (
     <figure className="hero-photo">
-      {PHOTOS.map((src, i) => (
-        <img key={i} src={src}
-          alt={i === 0 ? 'Felipe e Brenda abraçados em um parque' : 'Felipe e Brenda'}
-          className={i === index ? 'visible' : undefined}
-          loading={i === 0 ? 'eager' : 'lazy'} />
-      ))}
+      {PHOTOS.map((src, i) => {
+        // a foto principal (i === 0) mantém o enquadramento original; as demais
+        // ficam centralizadas na moldura (classe base), pois têm outros formatos.
+        const classes = [i === 0 ? 'cover-main' : null, i === index ? 'visible' : null]
+          .filter(Boolean)
+          .join(' ')
+        return (
+          <img key={i} src={src}
+            alt={i === 0 ? 'Felipe e Brenda abraçados em um parque' : 'Felipe e Brenda'}
+            className={classes || undefined}
+            loading={i === start ? 'eager' : 'lazy'} />
+        )
+      })}
     </figure>
   )
 }

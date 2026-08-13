@@ -237,10 +237,14 @@ main, .nav, .footer { position: relative; z-index: 1; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center; /* fotos novas: centralizadas na moldura */
   display: block;
   opacity: 0;
   transition: opacity 1.2s ease;
+}
+/* a foto principal mantém exatamente o enquadramento original */
+.hero-photo img.cover-main {
+  object-position: center 20%;
   transform: scale(1.12) translateX(3%);
 }
 .hero-photo img.visible { opacity: 1; }
