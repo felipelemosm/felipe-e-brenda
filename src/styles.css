@@ -251,7 +251,7 @@ main, .nav, .footer { position: relative; z-index: 1; }
    foto-capa  1500x2000  0.750  quase igual à moldura, corta quase nada
    capa-01    1400x933   1.501  bem mais larga: corta as laterais (sobra 53% da largura)
    capa-02     933x1400  0.666  mais alta: corta topo e base (sobra 83% da altura)
-   capa-03    1706x2560  0.666  mais alta: corta topo e base (sobra 83% da altura)
+   capa-03     933x1400  0.666  mais alta: corta topo e base (sobra 83% da altura)
    capa-04     932x1400  0.666  mais alta: corta topo e base (sobra 83% da altura)      */
 
 /* a foto principal mantém exatamente o enquadramento original */
