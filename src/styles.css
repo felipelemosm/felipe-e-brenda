@@ -237,15 +237,48 @@ main, .nav, .footer { position: relative; z-index: 1; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center; /* fotos novas: centralizadas na moldura */
+  object-position: center; /* padrão de quem ainda não tem regra própria */
   display: block;
   opacity: 0;
   transition: opacity 1.2s ease;
 }
+
+/* ---------- enquadramento por foto da capa ----------
+   A moldura é 4/5 (proporção 0.80) e cada foto tem a sua, então o `cover`
+   corta num eixo diferente em cada caso. Sem regra própria, o `center` deixa o
+   casal fora do meio. Os valores abaixo empurram o corte para onde o casal está.
+
+   foto-capa  1500x2000  0.750  quase igual à moldura, corta quase nada
+   capa-01    1400x933   1.501  bem mais larga: corta as laterais (sobra 53% da largura)
+   capa-02     933x1400  0.666  mais alta: corta topo e base (sobra 83% da altura)
+   capa-03    1706x2560  0.666  mais alta: corta topo e base (sobra 83% da altura)
+   capa-04     932x1400  0.666  mais alta: corta topo e base (sobra 83% da altura)      */
+
 /* a foto principal mantém exatamente o enquadramento original */
-.hero-photo img.cover-main {
+.hero-photo img[data-frame='foto-capa'] {
   object-position: center 20%;
   transform: scale(1.12) translateX(3%);
+}
+
+/* casal fica à direita do centro; sem isso o corte pega jardim vazio à esquerda */
+.hero-photo img[data-frame='capa-01'] {
+  object-position: 62% center;
+}
+
+/* casal ocupa a metade de baixo, sob a ramada: o corte favorece o chão */
+.hero-photo img[data-frame='capa-02'] {
+  object-position: center 78%;
+}
+
+/* casal fica na metade de baixo, contra o vitral; o corte desce para trazê-lo
+   ao meio sem perder o beijo na testa */
+.hero-photo img[data-frame='capa-03'] {
+  object-position: center 72%;
+}
+
+/* casal fica no terço de cima; o corte sobe para trazê-lo ao meio da moldura */
+.hero-photo img[data-frame='capa-04'] {
+  object-position: center 8%;
 }
 .hero-photo img.visible { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
