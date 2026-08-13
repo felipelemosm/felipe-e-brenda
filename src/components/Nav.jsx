@@ -12,6 +12,7 @@ const INFO_ROUTES = [
 const MOBILE_ROUTES = [
   { to: '/', label: 'Início', end: true },
   { to: '/historia', label: 'Nossa História' },
+  { to: '/mural', label: 'Mural' },
   ...INFO_ROUTES,
   { to: '/mensagens', label: 'Mensagens' },
   { to: '/presentes', label: 'Presentes' },
@@ -54,6 +55,9 @@ export default function Nav() {
           </NavLink>
           <NavLink to="/historia" className={({ isActive }) => (isActive ? 'active' : undefined)}>
             Nossa História
+          </NavLink>
+          <NavLink to="/mural" className={({ isActive }) => (isActive ? 'active' : undefined)}>
+            Mural
           </NavLink>
 
           <div className="nav-dropdown" ref={dropdownRef}
