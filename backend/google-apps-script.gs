@@ -32,9 +32,13 @@ function doPost(e) {
 
     if (p.tipo === 'presente') {
       const sheet = getSheet(GIFTS_SHEET,
-        ['Data', 'Slug', 'Presente', 'Valor de referência (R$)', 'Nome', 'Dedicatória', 'Exibir']);
+        ['Data', 'Slug', 'Presente', 'Valor de referência (R$)', 'Nome', 'Dedicatória', 'Exibir', 'Forma']);
+      // Garante o cabeçalho "Forma" (coluna H) mesmo em planilha antiga.
+      if (sheet.getRange(1, 8).getValue() !== 'Forma') sheet.getRange(1, 8).setValue('Forma');
       // Coluna "Exibir": troque para "Não" numa linha para o item voltar a
       // aparecer como DISPONÍVEL (ex.: se alguém marcou por engano).
+      // Coluna "Forma": 'cartão' quando o convidado confirmou o pagamento no cartão
+      // (autodeclarado — vale conferir no extrato); 'pix' quando registrou pelo PIX.
       sheet.appendRow([
         new Date(),
         p.slug || '',
@@ -43,6 +47,7 @@ function doPost(e) {
         p.nome || '',
         p.dedicatoria || '',
         'Sim',
+        p.forma || '',
       ]);
     } else if (p.tipo === 'mensagem') {
       const sheet = getSheet(MESSAGES_SHEET, ['Data', 'Nome', 'Mensagem', 'Exibir']);

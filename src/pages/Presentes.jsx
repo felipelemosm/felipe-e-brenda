@@ -11,6 +11,58 @@ const qrImages = import.meta.glob('../assets/pix-qr.{png,jpg,jpeg}', {
 })
 const PIX_QR = Object.values(qrImages)[0] ?? null
 
+// Registra um presente como escolhido — mesmo POST usado pelo PIX e pelo cartão.
+// `forma` só marca a origem na planilha ('pix' | 'cartão') para facilitar a
+// conferência dos noivos; o back-end ignora o campo se não o conhecer.
+async function registrarPresente({ gift, nome = '', dedicatoria = '', forma = '' }) {
+  await fetch(GIFT_ENDPOINT, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      tipo: 'presente',
+      slug: gift.slug,
+      presente: gift.name,
+      valor: String(gift.price),
+      nome,
+      dedicatoria,
+      forma,
+    }),
+  })
+}
+
+// Lembrete de pagamento no cartão: o link abre o Mercado Pago em outra aba, então
+// guardamos o item escolhido e, quando o foco volta para o site, perguntamos se o
+// pagamento foi concluído. Expira em 2h para não perguntar de novo fora de hora.
+const CARD_PENDING_KEY = 'presentePendenteCartao'
+const CARD_PENDING_TTL_MS = 2 * 60 * 60 * 1000
+
+function marcarCartaoPendente(slug) {
+  try {
+    sessionStorage.setItem(CARD_PENDING_KEY, JSON.stringify({ slug, ts: Date.now() }))
+  } catch {
+    // sessionStorage indisponível (aba anônima etc.): segue sem o lembrete
+  }
+}
+function lerCartaoPendente() {
+  try {
+    const raw = sessionStorage.getItem(CARD_PENDING_KEY)
+    if (!raw) return null
+    const data = JSON.parse(raw)
+    if (!data || Date.now() - data.ts > CARD_PENDING_TTL_MS) return null
+    return data.slug
+  } catch {
+    return null
+  }
+}
+function limparCartaoPendente() {
+  try {
+    sessionStorage.removeItem(CARD_PENDING_KEY)
+  } catch {
+    // ignore
+  }
+}
+
 // Foto de cada presente (fundo branco): src/assets/presentes/<slug>.jpg
 const giftPhotos = import.meta.glob('../assets/presentes/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -173,7 +225,7 @@ function GiftPhoto({ slug, name }) {
   )
 }
 
-function GiftCard({ gift, bought, onPix }) {
+function GiftCard({ gift, bought, onPix, onCardClick }) {
   return (
     <article className={`gift-card${bought ? ' bought' : ''}`}>
       {bought && <div className="gift-badge">Já comprado</div>}
@@ -191,6 +243,7 @@ function GiftCard({ gift, bought, onPix }) {
             {CARD_LINKS[gift.price] && (
               <a className="btn ghost gift-btn" target="_blank" rel="noopener noreferrer"
                 href={CARD_LINKS[gift.price]}
+                onClick={() => onCardClick(gift)}
                 title="No cartão incidem taxas para os dois lados — se puder, prefira o PIX">
                 Cartão
               </a>
@@ -202,7 +255,7 @@ function GiftCard({ gift, bought, onPix }) {
   )
 }
 
-function PixModal({ gift, onClose, onRegistered }) {
+function PixModal({ gift, onClose, onRegistered, onCardClick }) {
   const [copied, setCopied] = useState(false)
   const [registro, setRegistro] = useState('idle') // idle | form | sending | sent
   const [form, setForm] = useState({ nome: '', dedicatoria: '' })
@@ -211,18 +264,11 @@ function PixModal({ gift, onClose, onRegistered }) {
     event.preventDefault()
     setRegistro('sending')
     try {
-      await fetch(GIFT_ENDPOINT, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          tipo: 'presente',
-          slug: gift.slug,
-          presente: gift.name,
-          valor: String(gift.price),
-          nome: form.nome,
-          dedicatoria: form.dedicatoria,
-        }),
+      await registrarPresente({
+        gift,
+        nome: form.nome,
+        dedicatoria: form.dedicatoria,
+        forma: 'pix',
       })
       setRegistro('sent')
       onRegistered(gift.slug)
@@ -279,7 +325,8 @@ function PixModal({ gift, onClose, onRegistered }) {
           <div className="modal-card">
             <span className="modal-or">ou, se preferir</span>
             <a className="btn ghost" target="_blank" rel="noopener noreferrer"
-              href={CARD_LINKS[gift.price]}>
+              href={CARD_LINKS[gift.price]}
+              onClick={() => onCardClick(gift)}>
               Pagar com cartão de crédito
             </a>
             <p className="modal-card-note">
@@ -325,8 +372,71 @@ function PixModal({ gift, onClose, onRegistered }) {
   )
 }
 
+// Aparece quando o convidado volta do Mercado Pago (troca de aba ou setinha) após
+// clicar em "Cartão": pergunta se concluiu. No "Sim", registra o presente como
+// escolhido (autodeclarado — os noivos conferem depois e revertem se preciso).
+function CardConfirmModal({ gift, onClose, onRegistered }) {
+  const [step, setStep] = useState('ask') // ask | sending | sent
+  const [form, setForm] = useState({ nome: '', dedicatoria: '' })
+
+  async function confirmar() {
+    setStep('sending')
+    try {
+      await registrarPresente({
+        gift,
+        nome: form.nome,
+        dedicatoria: form.dedicatoria,
+        forma: 'cartão',
+      })
+      onRegistered(gift.slug)
+      setStep('sent')
+    } catch {
+      setStep('ask')
+    }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true"
+      aria-label={`Confirmar pagamento de ${gift.name}`}>
+      <div className="modal modal-confirm" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose} aria-label="Fechar">×</button>
+        <h3 className="modal-title">{gift.name}</h3>
+        <div className="modal-price">{formatPrice(gift.price)}</div>
+
+        {step === 'sent' ? (
+          <p className="gift-confirm-thanks">Presente registrado — muito obrigado! 🤍</p>
+        ) : (
+          <>
+            <p className="modal-confirm-q">Você concluiu o pagamento no cartão?</p>
+            <div className="gift-confirm-form">
+              <input type="text" placeholder="Seu nome (opcional)" value={form.nome}
+                onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+              <textarea rows="2" placeholder="Dedicatória aos noivos (opcional)"
+                value={form.dedicatoria} maxLength={300}
+                onChange={(e) => setForm({ ...form, dedicatoria: e.target.value })} />
+            </div>
+            <div className="modal-confirm-actions">
+              <button className="btn" onClick={confirmar} disabled={step === 'sending'}>
+                {step === 'sending' ? 'Registrando…' : 'Sim, concluí 🤍'}
+              </button>
+              <button className="btn ghost" onClick={onClose} disabled={step === 'sending'}>
+                Ainda não
+              </button>
+            </div>
+            <p className="modal-card-note">
+              Confirme só depois que o pagamento for aprovado. Marcou sem querer?
+              É só avisar o Felipe que a gente acerta.
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function Presentes() {
   const [selected, setSelected] = useState(null)
+  const [cardConfirm, setCardConfirm] = useState(null)
   const [sort, setSort] = useState('sugerido') // sugerido | preco-asc | preco-desc
   const [filter, setFilter] = useState('todos') // todos | disponiveis | comprados
   const [purchased, setPurchased] = useState(() => new Set())
@@ -352,6 +462,32 @@ export default function Presentes() {
       return next
     })
   }
+
+  function handleCardClick(gift) {
+    marcarCartaoPendente(gift.slug)
+  }
+
+  // Ao voltar o foco para o site (troca de aba ou setinha), se havia um pagamento
+  // de cartão pendente, abre o modal perguntando se foi concluído.
+  useEffect(() => {
+    function checarPendente() {
+      if (document.visibilityState !== 'visible') return
+      const slug = lerCartaoPendente()
+      if (!slug) return
+      limparCartaoPendente()
+      const gift = GIFT_BY_SLUG[slug]
+      if (!gift) return
+      setSelected(null) // fecha o modal do PIX, se estiver aberto
+      setCardConfirm(gift)
+    }
+    document.addEventListener('visibilitychange', checarPendente)
+    window.addEventListener('focus', checarPendente)
+    checarPendente() // cobre o retorno pela setinha na mesma aba (remontagem)
+    return () => {
+      document.removeEventListener('visibilitychange', checarPendente)
+      window.removeEventListener('focus', checarPendente)
+    }
+  }, [])
 
   const isBought = (slug) => purchased.has(slug)
 
@@ -433,7 +569,7 @@ export default function Presentes() {
             <div className="gift-grid">
               {items.map((gift) => (
                 <GiftCard key={gift.slug} gift={gift} bought={isBought(gift.slug)}
-                  onPix={setSelected} />
+                  onPix={setSelected} onCardClick={handleCardClick} />
               ))}
             </div>
           </div>
@@ -467,7 +603,12 @@ export default function Presentes() {
       </div>
 
       {selected && (
-        <PixModal gift={selected} onClose={() => setSelected(null)} onRegistered={markBought} />
+        <PixModal gift={selected} onClose={() => setSelected(null)} onRegistered={markBought}
+          onCardClick={handleCardClick} />
+      )}
+      {cardConfirm && (
+        <CardConfirmModal gift={cardConfirm} onClose={() => setCardConfirm(null)}
+          onRegistered={markBought} />
       )}
     </section>
   )

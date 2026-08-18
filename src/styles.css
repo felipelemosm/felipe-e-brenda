@@ -1663,6 +1663,22 @@ main, .nav, .footer { position: relative; z-index: 1; }
   font-style: italic;
   line-height: 1.5;
 }
+
+/* ---------- Modal de confirmação de pagamento no cartão ---------- */
+.modal-confirm-q {
+  margin: 0.6rem 0 1rem;
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--gold-deep);
+}
+.modal-confirm-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.9rem 0 0.6rem;
+}
+
 /* ---------- Indicador de carregamento (spinner) ---------- */
 .loading-box {
   display: flex;
